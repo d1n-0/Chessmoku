@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>체스 오목</title>
+    <link rel="icon" href="/assets/wN.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">체스 오목</a>
+      <nav>
+        <a href="/">대국</a><a href="/rules.html" aria-current="page">규칙</a>
+      </nav>
+    </header>
+    <main class="rules-page">
+      <h1>규칙</h1>
+      <h3>시작</h3>
+      <p>
+        8×8 보드에서 백부터 번갈아 한 번씩 행동합니다. 각자 폰 8개,
+        룩·비숍·나이트 각 2개, 킹·퀸 각 1개로 시작합니다.
+      </p>
+      <h3>배치와 이동</h3>
+      <p>
+        보관함의 기물 하나를 빈 칸 어디든 놓거나, 보드 위 내 기물 하나를 체스의
+        이동 규칙에 따라 움직이세요. 배치로 상대 기물을 잡을 수는 없습니다. 킹을
+        먼저 배치할 의무는 없습니다.
+      </p>
+      <h3>포획</h3>
+      <p>
+        이동으로 잡은 상대 기물은 내 색의 보관함에 추가되어 다음 내 턴부터
+        배치할 수 있습니다. 폰은 백이 8행 방향, 흑이 1행 방향으로 전진하며
+        대각선 앞의 상대를 잡습니다. 처음 이동하는 폰이 백 2행 / 흑 7행에
+        있으면, 경로가 비었을 때 두 칸 전진할 수 있습니다. 끝 행에 도달해도
+        승격하지 않습니다.
+      </p>
+      <h3>승리</h3>
+      <p>
+        종류에 상관없이 내 색 기물이 가로·세로·대각선으로 5개 이상 이어지거나,
+        상대 킹을 실제로 잡으면 즉시 승리합니다. 체크 상태에 따른 이동 제한은
+        없습니다. 캐슬링·앙파상·프로모션·쌍삼 금지는 적용하지 않습니다. 가능한
+        행동이 없으면 무승부입니다.
+      </p>
+      <h3>온라인 친선전</h3>
+      <p>
+        방장은 백, 입장자는 흑입니다. 두 사람이 연결되면 시작됩니다. 새로고침 후
+        자동 재접속하며, 일시적인 연결 끊김에는 대국이 일시 정지됩니다. 진행 중
+        방 나가기는 기권입니다. 재대국은 양쪽의 동의가 필요합니다.
+      </p>
+      <h2>기물 이동</h2>
+      <ul>
+        <li>룩: 가로·세로로 이동</li>
+        <li>비숍: 대각선으로 이동</li>
+        <li>퀸: 가로·세로·대각선으로 이동</li>
+        <li>킹: 모든 방향으로 한 칸 이동</li>
+        <li>
+          나이트: 한 방향으로 두 칸, 직각 방향으로 한 칸 이동. 다른 기물을
+          뛰어넘을 수 있습니다.
+        </li>
+      </ul>
+      <h2>조작</h2>
+      <p>
+        보관함의 기물 또는 보드 위 내 기물을 선택한 후 목적지를 누릅니다. 같은
+        기물을 다시 누르거나 Escape를 누르면 선택이 해제됩니다. 키보드는
+        Tab·방향키로 칸을 탐색하고 Enter·Space로 선택합니다.
+      </p>
+      <h2>출처</h2>
+      <p>
+        기물 SVG: Colin M. L. Burnett (Cburnett), CC BY-SA 3.0. 원본을 수정 없이
+        사용했습니다.
+      </p>
+      <p>
+        <a
+          href="https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces"
+          target="_blank"
+          rel="noreferrer"
+          >Wikimedia Commons</a
+        >
+        ·
+        <a
+          href="https://creativecommons.org/licenses/by-sa/3.0/"
+          target="_blank"
+          rel="noreferrer"
+          >라이선스</a
+        >
+        ·
+        <a
+          href="https://github.com/lichess-org/lila/tree/master/public/piece/cburnett"
+          target="_blank"
+          rel="noreferrer"
+          >SVG 제공: Lichess</a
+        >
+      </p>
+      
+      
+      <p>
+        한글 글꼴: NAVER Nanum Gothic ·
+        <a href="/assets/fonts/OFL.txt">SIL Open Font License 1.1</a>
+      </p>
+    </main>
+  </body>
+</html>

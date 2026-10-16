@@ -46,9 +46,16 @@ test("local placement, selection, five-in-row, undo, reload, reset, keyboard and
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "게임 방법" }).click();
-  await expect(page.locator("#rules-dialog")).toBeVisible();
-  await page.keyboard.press("Escape");
+  const rulesTab = page.waitForEvent("popup");
+  await page.getByRole("link", { name: "규칙", exact: true }).click();
+  const rules = await rulesTab;
+  await expect(
+    rules.getByRole("heading", { name: "규칙", exact: true }),
+  ).toBeVisible();
+  await expect(rules.locator("body")).toContainText(
+    "킹을 먼저 배치할 의무는 없습니다",
+  );
+  await rules.close();
   expect(errors).toEqual([]);
 });
 test("two browser sessions join a room, move, reconnect, win and agree to rematch", async ({

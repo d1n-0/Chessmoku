@@ -10,14 +10,6 @@ import {
 } from "/shared/game.js";
 const $ = (id) => document.getElementById(id);
 const asset = (c, t) => `/assets/${c}${t.toUpperCase()}.svg`;
-const hints = {
-  p: "앞으로 1칸 · 상대는 대각선 앞에서 포획",
-  n: "가로 2칸 + 세로 1칸 (또는 반대) · 뛰어넘기",
-  b: "대각선으로 원하는 만큼 이동",
-  r: "가로·세로 원하는 만큼 이동",
-  q: "가로·세로·대각선으로 원하는 만큼 이동",
-  k: "모든 방향으로 1칸 이동",
-};
 let game = newGame(),
   localGame = game,
   undoStack = [],
@@ -115,8 +107,6 @@ for (const d of document.querySelectorAll("dialog"))
         d.close();
     }
   });
-$("rules-open").onclick = () => $("rules-dialog").showModal();
-$("credits-open").onclick = () => $("credits-dialog").showModal();
 function canAct() {
   return (
     !game.result &&
@@ -152,52 +142,43 @@ function render() {
   if (room) {
     $("copy-code").textContent = room.code;
     $("connection").textContent = !connected
-      ? "연결이 끊겼습니다. 재접속 중…"
+      ? "재접속 중"
       : !room.joined
-        ? "친구의 입장을 기다리고 있어요."
+        ? "입장 대기 중"
         : !room.online[other(room.color)]
-          ? "상대 재접속 대기 · 대국 일시 정지"
+          ? "상대 재접속 대기"
           : `연결됨 · 나는 ${colorName(room.color)}`;
   }
   $("create-room").disabled = pending;
   $("join-form").querySelector("button").disabled = pending;
   renderBoard();
-  renderPlayers();
   renderReserves();
   renderHistory();
-  $("turn-dot").classList.toggle("black", game.turn === "b");
-  $("turn-number").textContent =
-    `TURN ${String(game.ply + 1).padStart(2, "0")}`;
-  let title = `${colorName(game.turn)}의 차례입니다`,
-    detail = selection
-      ? selection.type
-        ? `${NAMES[selection.type]}을 놓을 빈 칸을 선택하세요.`
-        : "표시된 칸으로 기물을 이동하세요."
-      : "기물을 배치하거나, 보드 위 내 기물을 움직이세요.";
+  $("turn-number").textContent = `${game.ply + 1}수`;
+  let title = `${colorName(game.turn)} 차례`,
+    detail = "";
   if (mode === "online" && !room) {
-    title = "친구와 새로운 대국을 시작하세요";
-    detail = "방을 만들거나 초대받은 6자리 코드를 입력하세요.";
+    title = "온라인 친선전";
+    detail = "";
   } else if (
     mode === "online" &&
     (!connected || !room.joined || !room.online[other(room.color)])
   ) {
-    title = "상대를 기다리고 있습니다";
-    detail = connected
-      ? "친구가 연결되면 대국을 진행할 수 있어요."
-      : "서버에 다시 연결하고 있어요.";
+    title = connected ? "상대 대기 중" : "재접속 중";
+    detail = "";
   } else if (mode === "online" && game.turn !== room.color) {
-    detail = "상대가 한 수를 고민하고 있어요.";
+    title = `${colorName(game.turn)} 차례 · 상대`;
   }
   if (game.result) {
     title = game.result.winner
       ? `${colorName(game.result.winner)} 승리!`
       : "무승부";
-    detail = resultText();
-    if (room?.rematch?.length)
-      detail = "재대국 요청 중 · 두 사람 모두 동의하면 시작합니다.";
+    detail = "";
+    if (room?.rematch?.length) detail = "재대국 요청 중";
   }
   $("status-title").textContent = title;
   $("status-detail").textContent = detail;
+  $("status-detail").hidden = !detail;
   $("reopen-result").hidden = !game.result;
   $("undo").disabled = mode !== "local" || !undoStack.length;
   $("resign").disabled =
@@ -261,31 +242,10 @@ function renderBoard() {
     board.append(b);
   }
 }
-function renderPlayers() {
-  for (const [id, color] of [
-    ["top-player", flipped ? "w" : "b"],
-    ["bottom-player", flipped ? "b" : "w"],
-  ]) {
-    const isMe = room?.color === color;
-    const label =
-      mode === "local"
-        ? "LOCAL PLAYER"
-        : room
-          ? isMe
-            ? "YOU"
-            : "FRIEND"
-          : "FRIENDLY MATCH";
-    const count = Object.values(game.reserves[color]).reduce(
-      (a, b) => a + b,
-      0,
-    );
-    $(id).innerHTML =
-      `<div class="avatar"><img src="${asset(color, "k")}" alt=""></div><div class="player-name">${colorName(color)} 플레이어${mode === "online" && isMe ? " · 나" : ""}<span class="player-sub">${label} <span> · 보관함 ${count}개</span></span></div><span class="player-status ${game.turn === color && !game.result ? "active" : ""}">${game.result ? "대국 종료" : game.turn === color ? "생각 중" : "대기 중"}</span>`;
-  }
-}
 function renderReserves() {
   const c = reserveColor();
-  $("reserve-color").textContent = `${colorName(c)}의 기물`;
+  $("reserve-color").textContent =
+    `${colorName(c)}${mode === "online" && room ? " · 나" : ""}`;
   $("reserves").replaceChildren();
   for (const type of TYPES) {
     const b = document.createElement("button");
@@ -300,18 +260,13 @@ function renderReserves() {
     b.innerHTML = `<span class="count">${game.reserves[c][type]}</span><img src="${asset(c, type)}" alt=""><span class="name">${NAMES[type]}</span>`;
     $("reserves").append(b);
   }
-  const type = selection?.type || game.board[selection?.from]?.type;
-  $("selection-info").textContent = type
-    ? `${NAMES[type]} · ${hints[type]}`
-    : "보드 위 기물을 선택하면 이동할 수 있어요.";
 }
 function renderHistory() {
   const el = $("history");
   el.replaceChildren();
   $("move-count").textContent = `${game.ply}수`;
   if (!game.history.length) {
-    el.innerHTML =
-      '<div class="empty-history"><span>♧</span>당신의 첫 수를 기다립니다.</div>';
+    el.innerHTML = '<div class="empty-history">—</div>';
     return;
   }
   for (let i = 0; i < game.history.length; i += 2) {
