@@ -371,3 +371,63 @@ test("room roster, color agreement and seat handoff work through the UI", async 
     await Promise.all(contexts.map((context) => context.close()));
   }
 });
+
+test("online undo can be cancelled, declined and accepted, then restored on reload", async ({
+  browser,
+}) => {
+  const ac = await browser.newContext(),
+    bc = await browser.newContext();
+  const a = await ac.newPage(),
+    b = await bc.newPage();
+  try {
+    for (const page of [a, b]) {
+      await page.goto("/");
+      await page.locator("#online-mode").click();
+    }
+    await a.locator("#create-room").click();
+    await expect(a.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+    await b
+      .locator("#room-input")
+      .fill(await a.locator("#copy-code").textContent());
+    await b.locator("#join-form button").click();
+    await expect(a.locator("#connection")).toContainText("연결됨");
+    await expect(a.locator("#undo")).toBeDisabled();
+    await place(a, "백 룩", 0);
+    await a.locator("#undo").click();
+    await expect(a.locator("#undo")).toHaveText("요청 취소");
+    await expect(b.locator("#undo")).toHaveText("무르기 수락");
+    await a.locator("#undo").click();
+    await expect(b.locator("#reject-undo")).toBeHidden();
+    await a.locator("#undo").click();
+    await b.locator("#reject-undo").click();
+    await expect(a.locator("#undo")).toHaveText("무르기");
+    await expect(a.locator("#move-count")).toHaveText("1수");
+    await place(b, "흑 나이트", 8);
+    await a.locator('[data-square="0"]').click();
+    await a.locator('[data-square="8"]').click();
+    await expect(a.locator("#move-count")).toHaveText("3수");
+    await a.locator("#undo").click();
+    await expect(b.locator("#undo")).toHaveText("무르기 수락");
+    await b.setViewportSize({ width: 390, height: 844 });
+    await b.locator("#undo").click();
+    for (const page of [a, b]) {
+      await expect(page.locator("#move-count")).toHaveText("2수");
+      await expect(page.locator('[data-square="0"] img')).toHaveAttribute(
+        "src",
+        "/assets/wR.svg",
+      );
+      await expect(page.locator('[data-square="8"] img')).toHaveAttribute(
+        "src",
+        "/assets/bN.svg",
+      );
+    }
+    await a.reload();
+    await expect(a.locator("#move-count")).toHaveText("2수");
+    await expect(a.locator("#status-title")).toHaveText("백 차례");
+    await place(a, "백 폰", 48);
+    await expect(b.locator("#move-count")).toHaveText("3수");
+  } finally {
+    await ac.close();
+    await bc.close();
+  }
+});

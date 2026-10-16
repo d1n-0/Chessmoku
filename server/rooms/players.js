@@ -17,6 +17,7 @@ function swapColors(room) {
     if (room.sockets[color]) room.sockets[color].color = color;
   }
   room.colorRequest = null;
+  room.undoRequest = null;
   room.rematch = [];
   room.version++;
 }
@@ -59,6 +60,7 @@ export function yieldSeat(room, socket, { attach, promote }) {
   room.tokens[color] = null;
   room.sockets[color] = null;
   room.colorRequest = null;
+  room.undoRequest = null;
   room.rematch = [];
   // Promote the next waiter before appending the departing player.
   promote(room);

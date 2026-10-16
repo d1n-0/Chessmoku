@@ -12,6 +12,7 @@ export function createRoomRepository(dataDir) {
         ...room,
         names: room.names || {},
         colorRequest: null,
+        undoRequest: null,
         sockets: { w: null, b: null },
         queue: (room.queue || []).map(({ token }) => ({ token, socket: null })),
       });

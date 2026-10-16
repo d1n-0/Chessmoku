@@ -84,11 +84,37 @@ export function createGameView() {
     if (room?.colorRequest && !game.result) {
       detail = "색상 변경 요청 · 대국 메뉴에서 확인";
     }
+    if (room?.undoRequest) title = "무르기 요청 중";
     $("status-title").textContent = title;
     $("status-detail").textContent = detail;
     $("status-detail").hidden = !detail;
     $("reopen-result").hidden = !game.result;
-    $("undo").disabled = mode !== "local" || !undoStack.length;
+    const undoRequest = room?.undoRequest;
+    const ownUndoRequest = undoRequest?.color === room?.color;
+    $("undo").textContent =
+      mode === "online" && undoRequest
+        ? ownUndoRequest
+          ? "요청 취소"
+          : "무르기 수락"
+        : "무르기";
+    $("undo").title =
+      mode === "online"
+        ? "상대 동의 후 마지막 한 수를 되돌립니다"
+        : "마지막 한 수를 되돌립니다";
+    $("undo").disabled =
+      mode === "local"
+        ? !undoStack.length
+        : !room?.color ||
+          !connected ||
+          pending ||
+          !room.joined ||
+          !room.online[other(room.color)] ||
+          !!game.result ||
+          !game.history.length ||
+          !!room.colorRequest;
+    $("reject-undo").hidden =
+      mode !== "online" || !room?.color || !undoRequest || ownUndoRequest;
+    $("reject-undo").disabled = !connected || pending;
     $("resign").disabled =
       !!game.result ||
       (mode === "online" && (!room?.color || !room?.joined || !connected));

@@ -1,6 +1,7 @@
 import { randomBytes, randomInt } from "node:crypto";
 import { newGame, applyAction, other } from "../../shared/game.js";
 
+import { handleUndo } from "./undo.js";
 import { playerName, handleColorRequest, yieldSeat } from "./players.js";
 
 export function createRoomService({
@@ -36,6 +37,7 @@ export function createRoomService({
         queue: [],
         names: {},
         colorRequest: null,
+        undoRequest: null,
       };
       room.names[room.tokens.w] = name;
       rooms.set(code, room);
@@ -69,6 +71,7 @@ export function createRoomService({
         room.tokens[color] = token;
         room.names[token] = name;
         room.colorRequest = null;
+        room.undoRequest = null;
         if (room.game.ply || room.game.result) {
           room.game = newGame();
           room.version++;
@@ -110,6 +113,7 @@ export function createRoomService({
       else {
         room.tokens[color] = null;
         room.colorRequest = null;
+        room.undoRequest = null;
         room.rematch = [];
       }
       promote(room);
@@ -118,11 +122,15 @@ export function createRoomService({
       return;
     }
     if (!color) throw new Error("대기 중에는 대국을 조작할 수 없습니다.");
-    if (["choose-color", "color-response"].includes(message.type)) {
+    if (["undo-request", "undo-response"].includes(message.type)) {
+      handleUndo(room, color, message);
+    } else if (["choose-color", "color-response"].includes(message.type)) {
       handleColorRequest(room, color, message);
     } else if (message.type === "yield-seat") {
       yieldSeat(room, socket, { attach, promote });
     } else if (message.type === "action") {
+      if (room.undoRequest)
+        throw new Error("무르기 요청을 수락하거나 취소해 주세요.");
       if (room.colorRequest)
         throw new Error("색상 변경 요청을 수락하거나 취소해 주세요.");
       if (!room.sockets[other(color)] || !room.tokens.b)
@@ -135,6 +143,7 @@ export function createRoomService({
       if (room.game.result || !room.tokens.w || !room.tokens.b)
         throw new Error("진행 중인 대국이 없습니다.");
       room.colorRequest = null;
+      room.undoRequest = null;
       room.game.result = { winner: other(color), reason: "resign", line: [] };
       room.version++;
     } else if (message.type === "rematch") {
@@ -145,6 +154,7 @@ export function createRoomService({
       if (!room.rematch.includes(color)) room.rematch.push(color);
       if (room.rematch.length === 2) {
         room.game = newGame();
+        room.undoRequest = null;
         room.version++;
         room.rematch = [];
       }

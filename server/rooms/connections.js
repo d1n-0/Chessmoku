@@ -26,6 +26,7 @@ export function createRoomConnections({ rooms, persist }) {
         color,
         queuePosition: position,
         colorRequest: room.colorRequest || null,
+        undoRequest: room.undoRequest || null,
         players: Object.fromEntries(
           ["w", "b"].map((c) => [
             c,
@@ -61,6 +62,7 @@ export function createRoomConnections({ rooms, persist }) {
       if (socket.color && room.sockets[socket.color] === socket) {
         room.sockets[socket.color] = null;
         room.colorRequest = null;
+        room.undoRequest = null;
       }
       const entry = room.queue.find((entry) => entry.socket === socket);
       if (entry) entry.socket = null;
@@ -102,6 +104,7 @@ export function createRoomConnections({ rooms, persist }) {
       room.version++;
       room.rematch = [];
       room.colorRequest = null;
+      room.undoRequest = null;
     }
   }
   return { send, broadcast, commit, detach, attach, promote };

@@ -429,3 +429,97 @@ test("player names, consensual colors, credential ownership and yielding seats",
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("online undo requires consent, restores captures and survives reconnect and restart", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-undo-"));
+  let app = await launch(dir);
+  const clients = [];
+  const connect = async () => {
+    const socket = await client(app.url);
+    clients.push(socket);
+    return socket;
+  };
+  try {
+    const a = await connect(),
+      b = await connect(),
+      c = await connect();
+    a.sendJSON({ type: "create" });
+    const sa = await a.next((m) => m.type === "session");
+    b.sendJSON({ type: "join", code: sa.code });
+    const sb = await b.next((m) => m.type === "session");
+    c.sendJSON({ type: "join", code: sa.code });
+    await c.next((m) => m.type === "session");
+    a.sendJSON({ type: "undo-request", version: 0 });
+    await a.next((m) => m.type === "error");
+    const move = async (socket, version, action) => {
+      socket.sendJSON({ type: "action", version, action });
+      return a.next((m) => m.type === "state" && m.version === version + 1);
+    };
+    await move(a, 0, { kind: "place", type: "r", to: 0 });
+    const before = await move(b, 1, { kind: "place", type: "n", to: 8 });
+    await move(a, 2, { kind: "move", from: 0, to: 8 });
+    c.sendJSON({ type: "undo-request", version: 3 });
+    assert.match((await c.next((m) => m.type === "error")).message, /대기 중/);
+    a.sendJSON({ type: "undo-request", version: 2 });
+    await a.next((m) => m.type === "error");
+    a.sendJSON({ type: "undo-request", version: 3 });
+    const request = (await a.next((m) => m.type === "state" && m.undoRequest))
+      .undoRequest;
+    a.sendJSON({ type: "undo-response", id: request.id, accept: true });
+    assert.match((await a.next((m) => m.type === "error")).message, /상대만/);
+    b.sendJSON({
+      type: "action",
+      version: 3,
+      action: { kind: "place", type: "p", to: 16 },
+    });
+    assert.match((await b.next((m) => m.type === "error")).message, /무르기/);
+    b.sendJSON({ type: "undo-response", id: request.id, accept: false });
+    await a.next(
+      (m) => m.type === "state" && m.version === 3 && !m.undoRequest,
+    );
+    a.sendJSON({ type: "undo-request", version: 3 });
+    const request2 = (
+      await a.next(
+        (m) =>
+          m.type === "state" &&
+          m.undoRequest &&
+          m.undoRequest.id !== request.id,
+      )
+    ).undoRequest;
+    b.sendJSON({ type: "undo-response", id: request.id, accept: true });
+    await b.next((m) => m.type === "error");
+    b.sendJSON({ type: "undo-response", id: request2.id, accept: true });
+    const restored = await a.next((m) => m.type === "state" && m.version === 4);
+    assert.deepEqual(restored.game, before.game);
+    assert.equal(restored.undoRequest, null);
+    const watched = await c.next((m) => m.type === "state" && m.version === 4);
+    assert.deepEqual(watched.game, before.game);
+    a.sendJSON({ type: "undo-request", version: 4 });
+    await a.next((m) => m.type === "state" && m.undoRequest);
+    b.close();
+    await a.next((m) => m.type === "state" && !m.online.b && !m.undoRequest);
+    await app.stop();
+    app = await launch(dir);
+    const ar = await connect(),
+      br = await connect();
+    ar.sendJSON({ type: "resume", code: sa.code, token: sa.token });
+    const resumed = await ar.next((m) => m.type === "state");
+    assert.deepEqual(resumed.game, before.game);
+    assert.equal(resumed.undoRequest, null);
+    br.sendJSON({ type: "resume", code: sb.code, token: sb.token });
+    await ar.next((m) => m.type === "state" && m.online.b);
+    ar.sendJSON({ type: "undo-request", version: 4 });
+    const finalRequest = (
+      await ar.next((m) => m.type === "state" && m.undoRequest)
+    ).undoRequest;
+    br.sendJSON({ type: "undo-response", id: finalRequest.id, accept: true });
+    const again = await ar.next((m) => m.type === "state" && m.version === 5);
+    assert.equal(again.game.ply, 1);
+    assert.equal(again.game.board[8], null);
+    assert.equal(again.game.reserves.b.n, 2);
+  } finally {
+    clients.forEach((socket) => socket.terminate());
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

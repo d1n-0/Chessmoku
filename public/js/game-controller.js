@@ -51,6 +51,7 @@ export function startGame() {
           connected &&
           room.joined &&
           !room.colorRequest &&
+          !room.undoRequest &&
           room.online[other(room.color)] &&
           game.turn === room.color))
     );
@@ -120,11 +121,29 @@ export function startGame() {
     render();
   };
   $("undo").onclick = () => {
-    if (mode !== "local" || !undoStack.length) return;
+    if (mode === "online") {
+      if (!room?.color || !connected) return;
+      const request = room.undoRequest;
+      send(
+        request
+          ? {
+              type: "undo-response",
+              id: request.id,
+              accept: request.color !== room.color,
+            }
+          : { type: "undo-request", version: room.version },
+      );
+      return;
+    }
+    if (!undoStack.length) return;
     game = undoStack.pop();
     selection = null;
     saveLocal();
     render();
+  };
+  $("reject-undo").onclick = () => {
+    if (room?.undoRequest)
+      send({ type: "undo-response", id: room.undoRequest.id, accept: false });
   };
   function resetLocal() {
     closePanel();
