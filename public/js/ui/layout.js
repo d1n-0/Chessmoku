@@ -4,7 +4,7 @@ import { $ } from "./dom.js";
 // event handlers and live game state. Never duplicate IDs or create a second UI.
 export function bindLayout() {
   const dialog = $("panel-dialog");
-  const compact = matchMedia("(max-width: 899px)");
+  const compact = matchMedia("(max-width: 1199px)");
   const panels = [
     {
       button: $("open-mode"),

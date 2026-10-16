@@ -1,6 +1,6 @@
 /* Keep the board and both hands together; ancillary panels use side columns. */
 .topbar {
-  max-width: 1320px;
+  max-width: none;
   min-height: 56px;
   padding: 8px 16px;
 }
@@ -9,19 +9,16 @@
   align-items: center;
 }
 .game-layout {
-  max-width: 1320px;
+  max-width: none;
   margin: 12px auto;
   padding: 0 16px;
   display: grid;
-  grid-template-columns: minmax(190px, 230px) minmax(0, 1fr) minmax(
-      210px,
-      250px
-    );
+  grid-template-columns: 230px minmax(0, 1fr) 220px;
   gap: 16px;
   align-items: start;
 }
 .arena {
-  width: min(100%, max(360px, calc(100dvh - 72px)));
+  width: min(100%, max(360px, calc(100dvh + 24px)));
   justify-self: center;
   display: grid;
   grid-template-columns: 100px minmax(0, 1fr) 100px;
@@ -52,11 +49,11 @@
   grid-column: 1 / -1;
 }
 .reserve-panel {
-  grid-column: 1;
+  grid-column: 3;
   grid-row: 2;
 }
 .opponent-panel {
-  grid-column: 3;
+  grid-column: 1;
   grid-row: 2;
 }
 .board-frame {
@@ -344,7 +341,7 @@ input {
 #close-panel {
   margin: -8px -8px 8px auto;
 }
-@media (max-width: 899px) {
+@media (max-width: 1199px) {
   .topbar {
     padding: 6px 12px;
   }
@@ -365,8 +362,19 @@ input {
   }
   .arena {
     margin: auto;
+  }
+  .mode-sidebar,
+  .history-sidebar {
+    display: none;
+  }
+}
+@media (max-width: 599px) {
+  .game-layout {
+    padding: 0 6px;
+  }
+  .arena {
     grid-template-columns: 72px minmax(0, 1fr) 72px;
-    gap: 6px;
+    gap: 4px;
   }
   .reserve {
     min-height: 68px;
