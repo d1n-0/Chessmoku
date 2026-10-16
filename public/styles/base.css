@@ -11,7 +11,7 @@
   --subtle-border: #ddd;
   --backdrop: #ffffffbb;
   --square: #fff;
-  --square-dark: #f1f1f1;
+  --square-dark: #c6c6c6;
   --last-move: #dedede;
   font-family: "Nanum Gothic", Arial, sans-serif;
   color: var(--text);
@@ -142,7 +142,7 @@ dialog p {
   --subtle-border: #414752;
   --backdrop: #080a0ed9;
   --square: #393e47;
-  --square-dark: #282d35;
+  --square-dark: #171b22;
   --last-move: #535f70;
 }
 .theme-toggle {
