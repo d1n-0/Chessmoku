@@ -1,9 +1,21 @@
 @import url("/fonts.css");
 :root {
   color-scheme: light;
+  --page: #fff;
+  --surface: #fff;
+  --text: #111;
+  --border: #111;
+  --hover: #f2f2f2;
+  --muted: #777;
+  --disabled-border: #aaa;
+  --subtle-border: #ddd;
+  --backdrop: #ffffffbb;
+  --square: #fff;
+  --square-dark: #f1f1f1;
+  --last-move: #dedede;
   font-family: "Nanum Gothic", Arial, sans-serif;
-  color: #111;
-  background: #fff;
+  color: var(--text);
+  background: var(--page);
   font-size: 16px;
 }
 * {
@@ -16,8 +28,8 @@ button,
 input {
   font: inherit;
   color: inherit;
-  background: #fff;
-  border: 2px solid #111;
+  background: var(--surface);
+  border: 2px solid var(--border);
   border-radius: 4px;
   min-height: 44px;
   padding: 10px 14px;
@@ -26,11 +38,11 @@ button {
   cursor: pointer;
 }
 button:hover:not(:disabled) {
-  background: #f2f2f2;
+  background: var(--hover);
 }
 button:disabled {
-  color: #777;
-  border-color: #aaa;
+  color: var(--muted);
+  border-color: var(--disabled-border);
   cursor: not-allowed;
 }
 a {
@@ -40,7 +52,7 @@ a {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
-  outline: 3px solid #111;
+  outline: 3px solid var(--text);
   outline-offset: 3px;
 }
 [hidden] {
@@ -54,7 +66,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #111;
+  border-bottom: 2px solid var(--border);
 }
 .brand {
   font-size: 24px;
@@ -66,16 +78,16 @@ nav {
   gap: 24px;
 }
 dialog {
-  background: #fff;
-  color: #111;
-  border: 2px solid #111;
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
   border-radius: 6px;
   padding: 28px;
   width: min(460px, calc(100% - 32px));
   max-height: 90dvh;
 }
 dialog::backdrop {
-  background: #ffffffbb;
+  background: var(--backdrop);
 }
 dialog h2 {
   font-size: 22px;
@@ -102,8 +114,8 @@ dialog p {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #fff;
-  border: 2px solid #111;
+  background: var(--surface);
+  border: 2px solid var(--border);
   padding: 16px 20px;
   width: max-content;
   max-width: calc(100% - 32px);
@@ -116,4 +128,35 @@ dialog p {
   height: 1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111317;
+  --surface: #1b1e23;
+  --text: #f0f1f3;
+  --border: #9ba1ac;
+  --hover: #30353e;
+  --muted: #a4aab5;
+  --disabled-border: #555d69;
+  --subtle-border: #414752;
+  --backdrop: #080a0ed9;
+  --square: #393e47;
+  --square-dark: #282d35;
+  --last-move: #535f70;
+}
+.theme-toggle {
+  width: 44px;
+  flex: 0 0 44px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+}
+.topbar nav {
+  align-items: center;
+}
+/* Preserve piece colors; outline black pieces against dark surfaces. */
+[data-theme="dark"] img[src^="/assets/b"] {
+  filter: drop-shadow(1px 0 0 #c7ccd4) drop-shadow(-1px 0 0 #c7ccd4)
+    drop-shadow(0 1px 0 #c7ccd4) drop-shadow(0 -1px 0 #c7ccd4);
 }

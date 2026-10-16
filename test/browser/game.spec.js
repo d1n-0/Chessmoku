@@ -273,3 +273,42 @@ test("compact layout fits common screens and mobile panels preserve controls", a
   await page.locator("#open-mode").click();
   await expect(page.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
 });
+
+test("theme follows system, persists manual choice and syncs the rules page", async ({
+  page,
+  context,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(
+    page.getByRole("button", { name: "다크 모드", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await place(page, "백 폰", 48);
+  await page.getByRole("button", { name: "다크 모드", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("#move-count")).toHaveText("1수");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  const rules = await context.newPage();
+  await rules.goto("/rules");
+  await expect(rules.locator("html")).toHaveAttribute("data-theme", "light");
+  await rules.getByRole("button", { name: "다크 모드", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(rules.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.screenshot({
+    path: "test-results/dark-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.screenshot({
+    path: "test-results/dark-mobile.png",
+    fullPage: true,
+  });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await rules.close();
+});

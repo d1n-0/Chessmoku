@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#ffffff" />
+    <script src="/js/theme.js"></script>
     <title>Chessmoku</title>
     <link rel="icon" href="/assets/wN.svg" />
     <link rel="stylesheet" href="/styles/base.css" />
@@ -28,6 +29,25 @@
           기보
         </button>
         <a href="/rules" target="_blank" rel="noopener">규칙</a>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="다크 모드"
+          aria-pressed="false"
+          title="다크 모드로 전환"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" />
+          </svg>
+        </button>
       </nav>
     </header>
     <main class="game-layout">
