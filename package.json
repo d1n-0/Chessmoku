@@ -7,7 +7,9 @@
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
     "test": "node --test test/*.test.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "format": "prettier --write \"{server,shared,public/js,test}/**/*.js\" \"server/pages/*.html\" \"public/styles/*.css\"",
+    "format:check": "prettier --check \"{server,shared,public/js,test}/**/*.js\" \"server/pages/*.html\" \"public/styles/*.css\""
   },
   "engines": {
     "node": ">=22"
@@ -17,6 +19,7 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.0"
+    "@playwright/test": "^1.56.0",
+    "prettier": "3.6.2"
   }
 }

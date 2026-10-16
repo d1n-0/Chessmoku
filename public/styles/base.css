@@ -1,0 +1,119 @@
+@import url("/fonts.css");
+:root {
+  color-scheme: light;
+  font-family: "Nanum Gothic", Arial, sans-serif;
+  color: #111;
+  background: #fff;
+  font-size: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 4px;
+  min-height: 44px;
+  padding: 10px 14px;
+}
+button {
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  background: #f2f2f2;
+}
+button:disabled {
+  color: #777;
+  border-color: #aaa;
+  cursor: not-allowed;
+}
+a {
+  color: inherit;
+  text-underline-offset: 5px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
+}
+[hidden] {
+  display: none !important;
+}
+.topbar {
+  max-width: 1120px;
+  margin: auto;
+  min-height: 80px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #111;
+}
+.brand {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+}
+nav {
+  display: flex;
+  gap: 24px;
+}
+dialog {
+  background: #fff;
+  color: #111;
+  border: 2px solid #111;
+  border-radius: 6px;
+  padding: 28px;
+  width: min(460px, calc(100% - 32px));
+  max-height: 90dvh;
+}
+dialog::backdrop {
+  background: #ffffffbb;
+}
+dialog h2 {
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+dialog p {
+  line-height: 1.7;
+}
+.dialog-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.close {
+  display: block;
+  margin: -12px -12px 4px auto;
+  border: 0;
+  font-size: 24px;
+}
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 2px solid #111;
+  padding: 16px 20px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  z-index: 100;
+  line-height: 1.6;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}

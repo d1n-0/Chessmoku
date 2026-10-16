@@ -56,6 +56,7 @@ test("local placement, selection, five-in-row, undo, reload, reset, keyboard and
   const rulesTab = page.waitForEvent("popup");
   await page.getByRole("link", { name: "규칙", exact: true }).click();
   const rules = await rulesTab;
+  await expect(rules).toHaveURL(/\/rules$/);
   await expect(
     rules.getByRole("heading", { name: "규칙", exact: true }),
   ).toBeVisible();

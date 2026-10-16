@@ -55,7 +55,7 @@ play.example.com {
 
 ## 조작 및 모드
 
-규칙·기물 이동·에셋 출처는 `/rules.html`에 분리했습니다. 상단 규칙 링크는 새 탭에서 열려 진행 중인 대국 연결을 유지합니다.
+규칙·기물 이동·에셋 출처는 `/rules`에 분리했습니다. 상단 규칙 링크는 새 탭에서 열려 진행 중인 대국 연결을 유지합니다.
 
 보관함 기물을 클릭한 뒤 빈 칸을 클릭하면 배치됩니다. 내 기물을 클릭하면 이동 가능 칸이 표시됩니다. 같은 기물을 다시 누르거나 Escape를 누르면 선택을 해제합니다. 보드는 Tab 및 방향키로 탐색하고 Enter/Space로 조작할 수 있습니다.
 
@@ -79,13 +79,35 @@ npm run test:e2e
 ## 구조
 
 ```text
-public/          브라우저 UI와 로컬 SVG 에셋
-shared/game.js   클라이언트/서버가 공유하는 순수 규칙 엔진
-server/index.js  Express 정적 파일 + WebSocket 방 서버
-test/            Node 테스트 및 Playwright 시나리오
-Dockerfile       비루트 사용자로 실행하는 프로덕션 이미지
-compose.yaml     포트, 상태 볼륨, 재시작 및 healthcheck 구성
+shared/
+  game.js                 규칙 엔진 공개 API (기존 import 경로 유지)
+  game/                   초기 상태, 이동, 승리 판정, 행동 적용, 저장 기보 재생
+server/
+  index.js                프로세스 시작·종료
+  app.js                  HTTP·저장소·WebSocket 조립
+  http.js                 페이지 라우팅·정적 파일·보안 헤더
+  websocket.js            연결·재접속·브로드캐스트·heartbeat·요청 제한
+  rooms/service.js        방 생성·입장·대국·기권·재대국 처리
+  rooms/repository.js     방 스냅샷 로드·원자적 파일 교체 저장
+  pages/                  대국·규칙 HTML
+public/
+  js/main.js              브라우저 진입점
+  js/game-controller.js   사용자 입력과 로컬/온라인 대국 흐름 조정
+  js/connection.js        WebSocket 연결·전송·재연결
+  js/storage.js           브라우저 저장소와 기존 저장 호환
+  js/download.js          기보 파일 내보내기
+  js/ui/                  보드·보관함·기보·대국 상태·대화상자 렌더링
+  styles/                 공통·대국·규칙 페이지 스타일
+  assets/                 기물·폰트 에셋
+scripts/                  밸런스 실험 도구
+test/                    규칙·HTTP·WebSocket·저장 복원·브라우저 테스트
 ```
+
+의존성은 UI/서버에서 `shared` 규칙 엔진으로 향합니다. 규칙 엔진은 DOM·파일·네트워크에 의존하지 않습니다. UI 컴포넌트는 전달받은 상태를 표시하고, 상태 변경과 사용자 입력은 컨트롤러에서 처리합니다. 통신 모듈은 콜백으로 수신·연결 이벤트를 전달합니다. 서버는 저장소와 방 처리에 필요한 연결 작업을 생성 시 주입합니다.
+
+페이지 URL은 `/`, `/rules`이며 HTML 파일명과 분리됩니다. 기존 `/rules.html`, `/index.html` 주소는 각각 정식 경로로 308 리다이렉트합니다. 저장 형식·방 프로토콜·기보 내보내기 형식은 유지합니다.
+
+규칙 변경은 `shared/game/`, 화면 변경은 `public/js/ui/`와 `public/styles/`, 방 정책 변경은 `server/rooms/service.js`에서 시작하면 됩니다. `npm run format`으로 코드 포맷을 적용하고 `npm run format:check`로 검사합니다. 변경 후 `npm test`와 `npm run test:e2e`를 실행합니다.
 
 `PORT`(기본 3000), `DATA_DIR`(기본 `./data`) 환경변수를 지원합니다. 방 코드에 재접속 토큰을 포함하지 않으며 서버는 상대 토큰을 전달하지 않습니다. 데이터 디렉터리는 정적 파일로 공개하지 않습니다. 에셋의 출처 및 라이선스는 [ATTRIBUTION.md](ATTRIBUTION.md)를 참조하세요.
 

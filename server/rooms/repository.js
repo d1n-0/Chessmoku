@@ -1,0 +1,24 @@
+import { mkdirSync, readFileSync, writeFileSync, renameSync } from "node:fs";
+import path from "node:path";
+
+// Socket handles exist only in memory; snapshots contain game and session data.
+export function createRoomRepository(dataDir) {
+  mkdirSync(dataDir, { recursive: true });
+  const file = path.join(dataDir, "rooms.json"),
+    rooms = new Map();
+  try {
+    for (const room of JSON.parse(readFileSync(file, "utf8")))
+      rooms.set(room.code, { ...room, sockets: { w: null, b: null } });
+  } catch (e) {
+    if (e.code !== "ENOENT") throw e;
+  }
+  const persist = () => {
+    writeFileSync(
+      file + ".tmp",
+      JSON.stringify([...rooms.values()].map(({ sockets, ...r }) => r)),
+      { mode: 0o600 },
+    );
+    renameSync(file + ".tmp", file);
+  };
+  return { rooms, persist };
+}

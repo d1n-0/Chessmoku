@@ -1,0 +1,30 @@
+.rules-page {
+  max-width: 760px;
+  padding: 0 24px 48px;
+  margin: 40px auto;
+  line-height: 1.9;
+}
+.rules-page h1 {
+  font-size: 28px;
+  margin: 0 0 32px;
+}
+.rules-page h2,
+.rules-page h3 {
+  font-size: 20px;
+  margin: 32px 0 12px;
+}
+.rules-page p {
+  margin: 12px 0;
+}
+.rules-page li {
+  margin: 10px 0;
+}
+@media (max-width: 680px) {
+  .topbar {
+    min-height: 68px;
+    padding: 16px;
+  }
+  .brand {
+    font-size: 22px;
+  }
+}

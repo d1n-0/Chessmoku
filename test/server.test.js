@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { WebSocket } from "ws";
-import { createApp } from "../server/index.js";
+import { createApp } from "../server/app.js";
 function client(url) {
   return new Promise((resolve) => {
     const ws = new WebSocket(url),
