@@ -66,9 +66,18 @@
                 aria-label="방 코드 복사"
               ></button>
               <p id="connection"></p>
+              <p id="queue-status" aria-live="polite"></p>
+              <ol id="room-queue" aria-label="방 대기열"></ol>
               <button id="leave-room" class="full">방 나가기</button>
             </div>
           </div>
+        </section>
+        <section class="panel opponent-panel" aria-label="상대 보관 기물">
+          <div class="panel-title">
+            <h2>기물</h2>
+            <span id="opponent-color"></span>
+          </div>
+          <div id="opponent-reserves" class="opponent-reserves"></div>
         </section>
         <section class="panel reserve-panel">
           <div class="panel-title">

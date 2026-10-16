@@ -79,7 +79,11 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     const c = await client(app.url);
     clients.push(c);
     c.sendJSON({ type: "join", code: sa.code });
-    assert.match((await c.next((m) => m.type === "error")).message, /두 명/);
+    const waiting = await c.next((m) => m.type === "state");
+    assert.equal(waiting.color, null);
+    assert.equal(waiting.queuePosition, 1);
+    c.sendJSON({ type: "leave" });
+    await c.next((m) => m.type === "left");
     c.sendJSON({ type: "resume", code: sa.code, token: "invalid" });
     assert.match((await c.next((m) => m.type === "error")).message, /재접속/);
     b.sendJSON({
@@ -166,6 +170,177 @@ test("cross origin websocket rejected and health endpoint available", async () =
     const code = await new Promise((resolve) => ws.on("close", resolve));
     assert.equal(code, 1008);
   } finally {
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("queue persists, resumes, restricts spectators and promotes FIFO on explicit leave", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-queue-"));
+  let app = await launch(dir);
+  const clients = [];
+  const connect = async () => {
+    const socket = await client(app.url);
+    clients.push(socket);
+    return socket;
+  };
+  const join = async (code) => {
+    const socket = await connect();
+    socket.sendJSON({ type: "join", code });
+    const session = await socket.next((m) => m.type === "session");
+    const state = await socket.next((m) => m.type === "state");
+    return { socket, session, state };
+  };
+  const resume = async (session) => {
+    const socket = await connect();
+    socket.sendJSON({
+      type: "resume",
+      code: session.code,
+      token: session.token,
+    });
+    await socket.next((m) => m.type === "session");
+    return socket;
+  };
+  try {
+    const white = await connect();
+    white.sendJSON({ type: "create" });
+    const owner = await white.next((m) => m.type === "session");
+    const black = await join(owner.code);
+    const first = await join(owner.code);
+    const second = await join(owner.code);
+    assert.equal(first.state.queuePosition, 1);
+    assert.equal(second.state.queuePosition, 2);
+    assert.equal(
+      JSON.stringify(second.state).includes(first.session.token),
+      false,
+    );
+    for (const type of ["action", "resign", "rematch"]) {
+      first.socket.sendJSON({
+        type,
+        version: 0,
+        action: { kind: "place", type: "q", to: 0 },
+      });
+      assert.match(
+        (await first.socket.next((m) => m.type === "error")).message,
+        /대기 중/,
+      );
+    }
+    // Socket loss retains the player's seat and the queued session's rank.
+    black.socket.close();
+    await white.next((m) => m.type === "state" && m.joined && !m.online.b);
+    assert.equal(app.rooms.get(owner.code).tokens.b, black.session.token);
+    await app.stop();
+    app = await launch(dir);
+    const restoredWhite = await resume(owner);
+    const restoredSecond = await resume(second.session);
+    const secondState = await restoredSecond.next((m) => m.type === "state");
+    assert.equal(secondState.queuePosition, 2);
+    assert.equal(secondState.queue[0].online, false);
+    const restoredFirst = await resume(first.session);
+    await restoredFirst.next((m) => m.type === "state");
+    const restoredBlack = await resume(black.session);
+    await restoredBlack.next((m) => m.type === "state");
+    restoredBlack.sendJSON({ type: "leave" });
+    const promoted = await restoredFirst.next(
+      (m) => m.type === "state" && m.color === "b",
+    );
+    assert.equal(promoted.game.ply, 0);
+    assert.equal(promoted.game.result, null);
+    assert.equal(promoted.queuePosition, null);
+    assert.equal(promoted.game.board[4].type, "k");
+    await restoredSecond.next(
+      (m) => m.type === "state" && m.queuePosition === 1,
+    );
+    // Leaving revokes the old player's credential.
+    const revoked = await connect();
+    revoked.sendJSON({
+      type: "resume",
+      code: owner.code,
+      token: black.session.token,
+    });
+    assert.match(
+      (await revoked.next((m) => m.type === "error")).message,
+      /재접속/,
+    );
+    restoredWhite.sendJSON({
+      type: "action",
+      version: promoted.version,
+      action: { kind: "place", type: "r", to: 0 },
+    });
+    const watched = await restoredSecond.next(
+      (m) => m.type === "state" && m.game.ply === 1,
+    );
+    assert.equal(watched.game.reserves.w.r, 1);
+    restoredSecond.sendJSON({ type: "leave" });
+    await restoredSecond.next((m) => m.type === "left");
+    restoredFirst.sendJSON({ type: "leave" });
+    await restoredFirst.next((m) => m.type === "left");
+    const replacement = await join(owner.code);
+    assert.equal(replacement.state.color, "b");
+    assert.equal(replacement.state.game.ply, 0);
+    assert.equal(replacement.state.game.result, null);
+    assert.equal(replacement.state.queue.length, 0);
+  } finally {
+    for (const socket of clients) socket.terminate();
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("offline waiters are skipped, white seats can be filled and queue cancellation keeps rematch votes", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-order-"));
+  const app = await launch(dir);
+  const sockets = [];
+  try {
+    for (let i = 0; i < 4; i++) sockets.push(await client(app.url));
+    const [white, black, first, second] = sockets;
+    white.sendJSON({ type: "create" });
+    const owner = await white.next((m) => m.type === "session");
+    const sessions = [];
+    for (const socket of [black, first, second]) {
+      socket.sendJSON({ type: "join", code: owner.code });
+      sessions.push(await socket.next((m) => m.type === "session"));
+      await socket.next((m) => m.type === "state");
+    }
+    first.close();
+    await second.next(
+      (m) => m.type === "state" && m.queue[0]?.online === false,
+    );
+    white.sendJSON({ type: "leave" });
+    const promoted = await second.next(
+      (m) => m.type === "state" && m.color === "w",
+    );
+    assert.equal(promoted.queue.length, 1);
+    assert.equal(promoted.game.result, null);
+    const resumed = await client(app.url);
+    sockets.push(resumed);
+    resumed.sendJSON({
+      type: "resume",
+      code: owner.code,
+      token: sessions[1].token,
+    });
+    await resumed.next((m) => m.type === "session");
+    assert.equal(
+      (await resumed.next((m) => m.type === "state")).queuePosition,
+      1,
+    );
+    black.sendJSON({ type: "resign" });
+    await second.next((m) => m.type === "state" && m.game.result);
+    second.sendJSON({ type: "rematch" });
+    await resumed.next((m) => m.type === "state" && m.rematch.includes("w"));
+    resumed.sendJSON({ type: "leave" });
+    await resumed.next((m) => m.type === "left");
+    const remaining = await second.next(
+      (m) => m.type === "state" && m.queue.length === 0,
+    );
+    assert.deepEqual(remaining.rematch, ["w"]);
+    black.sendJSON({ type: "rematch" });
+    await second.next(
+      (m) =>
+        m.type === "state" && m.game.result === null && m.rematch.length === 0,
+    );
+  } finally {
+    sockets.forEach((socket) => socket.terminate());
     await app.stop();
     rmSync(dir, { recursive: true, force: true });
   }

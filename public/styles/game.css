@@ -293,3 +293,27 @@ input {
     font-size: 14px;
   }
 }
+
+.opponent-reserves {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+.held-piece {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.held-piece img {
+  width: 32px;
+  height: 32px;
+}
+#room-queue {
+  padding-left: 24px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+#room-queue:empty {
+  display: none;
+}

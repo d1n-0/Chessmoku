@@ -8,14 +8,23 @@ export function createRoomRepository(dataDir) {
     rooms = new Map();
   try {
     for (const room of JSON.parse(readFileSync(file, "utf8")))
-      rooms.set(room.code, { ...room, sockets: { w: null, b: null } });
+      rooms.set(room.code, {
+        ...room,
+        sockets: { w: null, b: null },
+        queue: (room.queue || []).map(({ token }) => ({ token, socket: null })),
+      });
   } catch (e) {
     if (e.code !== "ENOENT") throw e;
   }
   const persist = () => {
     writeFileSync(
       file + ".tmp",
-      JSON.stringify([...rooms.values()].map(({ sockets, ...r }) => r)),
+      JSON.stringify(
+        [...rooms.values()].map(({ sockets, queue, ...room }) => ({
+          ...room,
+          queue: queue.map(({ token }) => ({ token })),
+        })),
+      ),
       { mode: 0o600 },
     );
     renameSync(file + ".tmp", file);

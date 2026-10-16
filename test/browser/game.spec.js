@@ -156,3 +156,78 @@ test("legacy local games restore without overwriting pieces and new games use pl
   );
   await expect(page.getByRole("button", { name: /백 킹 배치/ })).toBeDisabled();
 });
+
+test("waiting player watches reserves, reconnects and takes a vacated seat", async ({
+  browser,
+}) => {
+  const contexts = await Promise.all([
+    browser.newContext(),
+    browser.newContext(),
+    browser.newContext(),
+  ]);
+  const pages = await Promise.all(contexts.map((context) => context.newPage()));
+  const [white, black, waiting] = pages;
+  const errors = [];
+  pages.forEach((page) =>
+    page.on("pageerror", (error) => errors.push(error.message)),
+  );
+  try {
+    for (const page of pages) {
+      await page.goto("/");
+      await page
+        .getByRole("button", { name: "온라인 친선전", exact: true })
+        .click();
+    }
+    await white.getByRole("button", { name: "친선전 방 만들기" }).click();
+    await expect(white.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+    const code = await white.locator("#copy-code").textContent();
+    for (const page of [black, waiting]) {
+      await page.getByLabel("6자리 방 코드").fill(code);
+      await page.getByRole("button", { name: "입장", exact: true }).click();
+    }
+    await expect(waiting.locator("#queue-status")).toHaveText("대기 1번");
+    await expect(white.locator("#queue-status")).toHaveText("대기 1명");
+    await expect(waiting.locator("#resign")).toBeDisabled();
+    await expect(waiting.locator("#reserves button:enabled")).toHaveCount(0);
+    await expect(white.locator("#opponent-reserves")).toHaveAttribute(
+      "class",
+      "opponent-reserves",
+    );
+    await expect(
+      white.locator('#opponent-reserves [data-type="n"]'),
+    ).toHaveAttribute("aria-label", "흑 나이트 보관, 2개");
+    await expect(white.locator("#opponent-reserves button")).toHaveCount(0);
+    await place(white, "백 룩", 0);
+    await place(black, "흑 나이트", 8);
+    await expect(
+      white.locator('#opponent-reserves [data-type="n"]'),
+    ).toHaveAttribute("aria-label", "흑 나이트 보관, 1개");
+    await white.locator('[data-square="0"]').click();
+    await white.locator('[data-square="8"]').click();
+    await expect(
+      black.locator('#opponent-reserves [data-type="n"]'),
+    ).toHaveAttribute("aria-label", "백 나이트 보관, 3개");
+    await expect(waiting.locator("#move-count")).toHaveText("3수");
+    await waiting.reload();
+    await expect(waiting.locator("#queue-status")).toHaveText("대기 1번");
+    await black.getByRole("button", { name: "방 나가기", exact: true }).click();
+    await black.locator("#confirm-ok").click();
+    await expect(waiting.locator("#connection")).toContainText("나는 흑");
+    await expect(waiting.locator("#move-count")).toHaveText("0수");
+    await expect(white.locator("#queue-status")).toHaveText("대기 0명");
+    await place(white, "백 폰", 48);
+    await place(waiting, "흑 폰", 16);
+    await expect(
+      white.locator('#opponent-reserves [data-type="p"]'),
+    ).toHaveAttribute("aria-label", "흑 폰 보관, 7개");
+    await waiting.setViewportSize({ width: 390, height: 844 });
+    expect(
+      await waiting.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(errors).toEqual([]);
+  } finally {
+    await Promise.all(contexts.map((context) => context.close()));
+  }
+});

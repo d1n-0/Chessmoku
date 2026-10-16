@@ -1,63 +1,12 @@
-import { WebSocketServer, WebSocket } from "ws";
+import { WebSocketServer } from "ws";
+import { createRoomConnections } from "./rooms/connections.js";
 import { createRoomService } from "./rooms/service.js";
 
 export function attachWebSocketServer(server, { rooms, persist }) {
   const wss = new WebSocketServer({ server, maxPayload: 4096 });
-  const send = (socket, value) => {
-    if (socket?.readyState === WebSocket.OPEN)
-      socket.send(JSON.stringify(value));
-  };
-  const broadcast = (room) => {
-    for (const color of ["w", "b"])
-      send(room.sockets[color], {
-        type: "state",
-        code: room.code,
-        color,
-        game: room.game,
-        version: room.version,
-        joined: !!room.tokens.b,
-        online: {
-          w: room.sockets.w?.readyState === 1,
-          b: room.sockets.b?.readyState === 1,
-        },
-        rematch: room.rematch,
-      });
-  };
-  const commit = (room) => {
-    room.updated = Date.now();
-    persist();
-    broadcast(room);
-  };
-  const detach = (socket) => {
-    const room = rooms.get(socket.room);
-    if (room && room.sockets[socket.color] === socket) {
-      room.sockets[socket.color] = null;
-      broadcast(room);
-    }
-    socket.room = null;
-  };
-  const attach = (socket, room, color) => {
-    detach(socket);
-    const old = room.sockets[color];
-    room.sockets[color] = socket;
-    socket.room = room.code;
-    socket.color = color;
-    if (old && old !== socket) old.close(4001, "Connected elsewhere");
-    send(socket, {
-      type: "session",
-      code: room.code,
-      color,
-      token: room.tokens[color],
-    });
-    commit(room);
-  };
-  const handleMessage = createRoomService({
-    rooms,
-    attach,
-    detach,
-    commit,
-    send,
-  });
+  const connections = createRoomConnections({ rooms, persist });
+  const { send, detach } = connections;
+  const handleMessage = createRoomService({ rooms, ...connections });
   wss.on("connection", (socket, req) => {
     // Reject cross-site browser connections; CLI clients have no Origin.
     if (req.headers.origin) {
@@ -110,6 +59,7 @@ export function attachWebSocketServer(server, { rooms, persist }) {
       if (
         !room.sockets.w &&
         !room.sockets.b &&
+        !room.queue.some((entry) => entry.socket) &&
         Date.now() - room.updated > 86400000
       ) {
         rooms.delete(code);

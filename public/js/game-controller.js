@@ -44,7 +44,7 @@ export function startGame() {
       !game.result &&
       !pending &&
       (mode === "local" ||
-        (room &&
+        (room?.color &&
           connected &&
           room.joined &&
           room.online[other(room.color)] &&
@@ -168,7 +168,7 @@ export function startGame() {
       if (msg.type === "session") {
         setSession({ code: msg.code, token: msg.token });
       } else if (msg.type === "state") {
-        const firstJoin = !room;
+        const firstJoin = !room || room.color !== msg.color;
         const oldVersion = room?.version;
         const hadResult = !!game.result;
         room = msg;
@@ -227,7 +227,9 @@ export function startGame() {
   $("leave-room").onclick = () => {
     confirmAction(
       "방을 나갈까요?",
-      "진행 중인 대국에서 나가면 기권으로 처리됩니다.",
+      room?.color
+        ? "진행 중인 대국에서 나가면 기권으로 처리됩니다."
+        : "대기열에서 나갑니다.",
       () => {
         if (connected) send({ type: "leave" });
         else toast("재접속이 완료된 후 방을 나갈 수 있습니다.");

@@ -40,12 +40,27 @@ export function createGameView() {
       $("copy-code").textContent = room.code;
       $("connection").textContent = !connected
         ? "재접속 중"
-        : !room.joined
-          ? "입장 대기 중"
-          : !room.online[other(room.color)]
-            ? "상대 재접속 대기"
-            : `연결됨 · 나는 ${colorName(room.color)}`;
+        : !room.color
+          ? "관전 중"
+          : !room.joined
+            ? "입장 대기 중"
+            : !room.online[other(room.color)]
+              ? "상대 재접속 대기"
+              : `연결됨 · 나는 ${colorName(room.color)}`;
     }
+    if (room) {
+      $("queue-status").textContent = room.color
+        ? `대기 ${room.queue.length}명`
+        : `대기 ${room.queuePosition}번`;
+      $("room-queue").replaceChildren();
+      for (const entry of room.queue) {
+        const item = document.createElement("li");
+        item.textContent = `대기 ${entry.position}${entry.position === room.queuePosition ? " · 나" : ""}${entry.online ? "" : " · 재접속 대기"}`;
+        $("room-queue").append(item);
+      }
+    }
+    $("play-again").hidden =
+      mode === "online" && (!room?.color || !room.joined);
     $("create-room").disabled = pending;
     $("join-form").querySelector("button").disabled = pending;
     renderBoard({ game, selection, flipped, canAct });
@@ -57,6 +72,8 @@ export function createGameView() {
     if (mode === "online" && !room) {
       title = "온라인 친선전";
       detail = "";
+    } else if (mode === "online" && !room.color) {
+      title = `${colorName(game.turn)} 차례 · 관전`;
     } else if (
       mode === "online" &&
       (!connected || !room.joined || !room.online[other(room.color)])
@@ -79,7 +96,8 @@ export function createGameView() {
     $("reopen-result").hidden = !game.result;
     $("undo").disabled = mode !== "local" || !undoStack.length;
     $("resign").disabled =
-      !!game.result || (mode === "online" && (!room?.joined || !connected));
+      !!game.result ||
+      (mode === "online" && (!room?.color || !room?.joined || !connected));
     $("export-game").disabled = !game.history.length;
     if (game.result && game.result !== lastResult) {
       lastResult = game.result;

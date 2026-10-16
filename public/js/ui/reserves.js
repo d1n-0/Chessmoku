@@ -1,10 +1,25 @@
-import { NAMES, TYPES, colorName } from "/shared/game.js";
+import { NAMES, TYPES, colorName, other } from "/shared/game.js";
 import { $, asset } from "./dom.js";
 
 export function renderReserves({ game, selection, mode, room, canAct }) {
-  const c = mode === "online" && room ? room.color : game.turn;
+  const c = mode === "online" && room?.color ? room.color : game.turn;
   $("reserve-color").textContent =
-    `${colorName(c)}${mode === "online" && room ? " · 나" : ""}`;
+    `${colorName(c)}${mode === "online" && room?.color ? " · 나" : ""}`;
+  const opponent = other(c);
+  $("opponent-color").textContent =
+    `${colorName(opponent)}${room?.color ? " · 상대" : ""}`;
+  $("opponent-reserves").replaceChildren();
+  for (const type of TYPES) {
+    const piece = document.createElement("div");
+    piece.className = "held-piece";
+    piece.dataset.type = type;
+    piece.setAttribute(
+      "aria-label",
+      `${colorName(opponent)} ${NAMES[type]} 보관, ${game.reserves[opponent][type]}개`,
+    );
+    piece.innerHTML = `<img src="${asset(opponent, type)}" alt=""><span>${game.reserves[opponent][type]}</span>`;
+    $("opponent-reserves").append(piece);
+  }
   $("reserves").replaceChildren();
   for (const type of TYPES) {
     const b = document.createElement("button");
