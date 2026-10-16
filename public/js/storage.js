@@ -1,3 +1,4 @@
+// Keep the original storage keys so renaming the app preserves games and room sessions.
 import { newGame } from "/shared/game.js";
 import { replayLocalGame } from "/shared/game/replay.js";
 

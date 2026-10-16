@@ -1,5 +1,6 @@
 services:
   game:
+    image: chessmoku:latest
     build: .
     ports:
       - "${PORT:-3000}:3000"

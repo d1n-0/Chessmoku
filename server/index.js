@@ -5,7 +5,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { server, wss } = createApp();
   const port = Number(process.env.PORT) || 3000;
   server.listen(port, "0.0.0.0", () =>
-    console.log(`Chess × Gomoku · http://localhost:${port}`),
+    console.log(`Chessmoku · http://localhost:${port}`),
   );
   const stop = () => {
     for (const ws of wss.clients) ws.close(1001);

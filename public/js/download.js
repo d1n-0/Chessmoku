@@ -12,7 +12,7 @@ export function downloadGame(game) {
   const url = URL.createObjectURL(blob),
     a = document.createElement("a");
   a.href = url;
-  a.download = `five-crown-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `chessmoku-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
