@@ -9,6 +9,7 @@ import {
 import { createConnection } from "./connection.js";
 import { $ } from "./ui/dom.js";
 import { toast, confirmAction, bindDialogs } from "./ui/dialogs.js";
+import { bindLayout } from "./ui/layout.js";
 import { createGameView } from "./ui/game-view.js";
 
 export function startGame() {
@@ -22,6 +23,7 @@ export function startGame() {
     connected = false,
     pending = false;
   bindDialogs();
+  const { closePanel } = bindLayout();
   function saveLocal() {
     localGame = game;
     saveLocalGame(game);
@@ -123,6 +125,7 @@ export function startGame() {
     render();
   };
   function resetLocal() {
+    closePanel();
     undoStack = [];
     game = newGame();
     selection = null;
@@ -176,7 +179,10 @@ export function startGame() {
         game = msg.game;
         if (hadResult && game.result) preserveResultDialog(game.result);
         if (oldVersion !== room.version) selection = null;
-        if (firstJoin) flipped = room.color === "b";
+        if (firstJoin) {
+          flipped = room.color === "b";
+          closePanel();
+        }
         render();
       } else if (msg.type === "left") {
         setSession(null);

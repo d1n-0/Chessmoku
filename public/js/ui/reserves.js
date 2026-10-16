@@ -3,11 +3,9 @@ import { $, asset } from "./dom.js";
 
 export function renderReserves({ game, selection, mode, room, canAct }) {
   const c = mode === "online" && room?.color ? room.color : game.turn;
-  $("reserve-color").textContent =
-    `${colorName(c)}${mode === "online" && room?.color ? " · 나" : ""}`;
+  $("reserve-color").textContent = colorName(c);
   const opponent = other(c);
-  $("opponent-color").textContent =
-    `${colorName(opponent)}${room?.color ? " · 상대" : ""}`;
+  $("opponent-color").textContent = colorName(opponent);
   $("opponent-reserves").replaceChildren();
   for (const type of TYPES) {
     const piece = document.createElement("div");

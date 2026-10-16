@@ -12,29 +12,26 @@
   <body>
     <header class="topbar">
       <a class="brand" href="/">Chessmoku</a>
-      <nav><a href="/rules" target="_blank" rel="noopener">규칙</a></nav>
+      <nav>
+        <button
+          id="open-mode"
+          class="mobile-panel-toggle"
+          aria-haspopup="dialog"
+        >
+          대국
+        </button>
+        <button
+          id="open-history"
+          class="mobile-panel-toggle"
+          aria-haspopup="dialog"
+        >
+          기보
+        </button>
+        <a href="/rules" target="_blank" rel="noopener">규칙</a>
+      </nav>
     </header>
     <main class="game-layout">
-      <section class="arena" aria-label="대국 보드">
-        <div class="turn-banner" aria-live="polite">
-          <strong id="status-title"></strong><span id="turn-number"></span>
-        </div>
-        <div class="board-frame">
-          <div
-            id="board"
-            class="board"
-            role="group"
-            aria-label="Chessmoku 8 곱하기 8 보드"
-          ></div>
-        </div>
-        <div class="board-toolbar">
-          <button id="flip-board">보드 뒤집기</button
-          ><button id="undo">무르기</button
-          ><button id="reopen-result" hidden>결과 · 재대국</button>
-        </div>
-        <p id="status-detail" role="status" hidden></p>
-      </section>
-      <aside class="sidebar">
+      <aside id="mode-slot" class="mode-sidebar">
         <section class="panel mode-panel" aria-label="대국 모드">
           <div class="mode-tabs">
             <button id="local-mode" class="active">오프라인</button
@@ -72,6 +69,11 @@
             </div>
           </div>
         </section>
+      </aside>
+      <section class="arena" aria-label="대국 보드">
+        <div class="turn-banner" aria-live="polite">
+          <strong id="status-title"></strong><span id="turn-number"></span>
+        </div>
         <section class="panel opponent-panel" aria-label="상대 보관 기물">
           <div class="panel-title">
             <h2>기물</h2>
@@ -79,6 +81,14 @@
           </div>
           <div id="opponent-reserves" class="opponent-reserves"></div>
         </section>
+        <div class="board-frame">
+          <div
+            id="board"
+            class="board"
+            role="group"
+            aria-label="Chessmoku 8 곱하기 8 보드"
+          ></div>
+        </div>
         <section class="panel reserve-panel">
           <div class="panel-title">
             <h2>기물</h2>
@@ -86,6 +96,14 @@
           </div>
           <div id="reserves" class="reserves"></div>
         </section>
+        <div class="board-toolbar">
+          <button id="flip-board">보드 뒤집기</button
+          ><button id="undo">무르기</button
+          ><button id="reopen-result" hidden>결과 · 재대국</button>
+        </div>
+        <p id="status-detail" role="status" hidden></p>
+      </section>
+      <aside id="history-slot" class="history-sidebar">
         <section class="panel history-panel">
           <div class="panel-title">
             <h2>기보</h2>
@@ -102,6 +120,10 @@
         </section>
       </aside>
     </main>
+    <dialog id="panel-dialog" aria-label="대국 정보">
+      <button id="close-panel" class="close" aria-label="닫기">×</button>
+      <div id="panel-content"></div>
+    </dialog>
     <div id="toast" class="toast" role="status" hidden></div>
     <dialog id="confirm-dialog">
       <h2 id="confirm-title"></h2>

@@ -231,3 +231,45 @@ test("waiting player watches reserves, reconnects and takes a vacated seat", asy
     await Promise.all(contexts.map((context) => context.close()));
   }
 });
+
+test("compact layout fits common screens and mobile panels preserve controls", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const [width, height] of [
+    [1280, 720],
+    [1024, 768],
+    [390, 844],
+    [375, 667],
+    [360, 640],
+  ]) {
+    await page.setViewportSize({ width, height });
+    await expect(page.locator("#board")).toBeInViewport();
+    await expect(page.locator("#reserves")).toBeInViewport();
+    expect(
+      await page.evaluate(() => ({
+        vertical: document.documentElement.scrollHeight <= innerHeight,
+        horizontal: document.documentElement.scrollWidth <= innerWidth,
+      })),
+    ).toEqual({ vertical: true, horizontal: true });
+  }
+  await page.locator("#open-mode").click();
+  await expect(page.locator("#panel-dialog")).toBeVisible();
+  await page.locator("#online-mode").click();
+  await page.locator("#create-room").click();
+  await expect(page.locator("#panel-dialog")).not.toBeVisible();
+  await expect(page.locator("#status-title")).toHaveText("상대 대기 중");
+  await page.locator("#open-mode").click();
+  await expect(page.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(page.locator("#panel-dialog")).not.toBeVisible();
+  await expect(page.locator("#mode-slot #copy-code")).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.locator("#open-history").click();
+  await expect(page.locator("#panel-content #history")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#panel-dialog")).not.toBeVisible();
+  await expect(page.locator("#board")).toBeInViewport();
+  await page.locator("#open-mode").click();
+  await expect(page.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+});
