@@ -16,7 +16,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: Arial, "Nanum Gothic", "Malgun Gothic", sans-serif;
+  font-family: "Nanum Gothic", Arial, "Malgun Gothic", sans-serif;
   font-size: 14px;
 }
 button,
