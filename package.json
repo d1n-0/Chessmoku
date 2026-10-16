@@ -1,7 +1,22 @@
 {
-  "name": "chess-gomoku", "version": "1.0.0", "private": true, "type": "module",
-  "scripts": {"start": "node server/index.js", "dev": "node --watch server/index.js", "test": "node --test test/*.test.js", "test:e2e": "playwright test"},
-  "engines": {"node": ">=22"},
-  "dependencies": {"express": "^5.1.0", "ws": "^8.18.3"},
-  "devDependencies": {"@playwright/test": "^1.56.0"}
+  "name": "chess-gomoku",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "playwright test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
 }

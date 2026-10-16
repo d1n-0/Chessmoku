@@ -1,1 +1,14 @@
-/* System fonts keep the game self-contained and available without a CDN. */
+@font-face {
+  font-family: "Nanum Gothic";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/NanumGothic-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Nanum Gothic";
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url("/assets/fonts/NanumGothic-Bold.ttf") format("truetype");
+}
