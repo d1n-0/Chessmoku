@@ -13,28 +13,69 @@ npm start
 
 <http://localhost:3000>에 접속합니다. 개발 중 자동 재시작은 `npm run dev`입니다. 외부 CDN 없이 모든 게임 에셋을 제공합니다. 오프라인 모드는 한 컴퓨터의 브라우저에서 흑백을 모두 조작한다는 뜻이며, 최초 페이지 제공에는 로컬 서버가 필요합니다.
 
-## Docker 배포
+## Docker 배포 (HTTPS)
 
 ```sh
-docker compose up -d --build
+# 선택 사항: 설정 파일이 없으면 DOMAIN=localhost
+cp .env.example .env
+
+docker compose up -d --build --wait
 ```
 
-<http://localhost:3000>에 접속합니다. 다른 기기는 `http://서버IP:3000`으로 접속합니다. 방 코드는 같은 서버 안에서만 유효합니다. 외부 친구와 플레이하려면 서버에 접근 가능한 주소와 포트가 필요합니다.
+기본 접속 주소는 <https://localhost>입니다. Caddy가 TLS를 처리하고, HTTP 요청을 HTTPS로 리다이렉트합니다. 온라인 친선전은 같은 주소의 `wss://` 연결을 사용합니다. 게임 서버의 3000 포트는 Docker 내부에서만 접근할 수 있습니다. 기본적으로 호스트의 TCP 80·443과 UDP 443 포트를 사용합니다. 이미 사용 중인 포트가 있다면 `.env`에서 `HTTP_PORT=8080`, `HTTPS_PORT=8443`처럼 바꿀 수 있으며, 이때 접속 주소는 `https://localhost:8443`입니다. 공개 도메인의 자동 인증서 검증은 외부 표준 포트 80/443이 필요하므로 비표준 포트는 로컬 시험용으로 사용하거나 별도 포트포워딩을 구성하세요.
+
+### localhost 인증서
+
+`localhost`에서는 Caddy가 자체 로컬 인증기관(CA)으로 인증서를 발급합니다. 컨테이너 안의 CA는 호스트 브라우저에서 자동으로 신뢰되지 않으므로 최초 실행 후 루트 인증서를 추출하세요.
+
+```sh
+docker compose cp proxy:/data/caddy/pki/authorities/local/root.crt ./chessmoku-local-ca.crt
+```
+
+추출한 **공개 인증서**를 접속할 운영체제/브라우저의 신뢰할 수 있는 루트 인증기관에 등록합니다. Windows에서는 인증서 가져오기에서 현재 사용자 → 신뢰할 수 있는 루트 인증 기관을 선택합니다. macOS에서는 키체인 접근으로 가져와 신뢰를 설정합니다. Ubuntu/Debian에서는 다음 명령을 사용할 수 있습니다.
+
+```sh
+sudo cp chessmoku-local-ca.crt /usr/local/share/ca-certificates/chessmoku-local-ca.crt
+sudo update-ca-certificates
+```
+
+브라우저가 별도 인증서 저장소를 사용하는 경우 해당 브라우저에도 등록하고 다시 시작하세요. 다른 기기에서 사용할 때는 `localhost` 대신 실제 접근할 도메인을 설정해야 합니다. 이 인증서는 로컬 개발용이며 공개 도메인 배포에서는 수동 등록이 필요 없습니다.
+
+### 공개 도메인 설정
+
+`.env`의 `DOMAIN`을 자신의 도메인으로 변경합니다. `https://`나 경로 없이 호스트 이름만 입력하세요.
+
+```dotenv
+DOMAIN=play.example.com
+```
+
+도메인의 A/AAAA 레코드가 이 서버를 가리키도록 설정하고, 외부에서 서버의 TCP 80·443에 접근할 수 있도록 방화벽/포트포워딩을 구성한 다음 실행합니다.
+
+```sh
+docker compose up -d --build --wait
+docker compose logs -f proxy
+```
+
+Caddy가 공개 인증서 발급·갱신을 자동 처리합니다. 공개 인증서의 실제 발급 성공 여부는 프록시 로그와 HTTPS 접속으로 확인하세요. `--wait`는 인증서 발급 완료까지 보장하지 않습니다. 구성은 [Caddy 자동 HTTPS 문서](https://caddyserver.com/docs/automatic-https)를 따릅니다.
+
+### 운영과 데이터 보존
 
 ```sh
 docker compose logs -f
 docker compose down
 ```
 
-다른 호스트 포트는 `PORT=8080 docker compose up -d --build`로 지정합니다. `game-data` Docker 볼륨에 온라인 방 상태를 보존하므로 컨테이너를 재생성해도 복구됩니다. `docker compose down -v`는 대국 데이터를 삭제합니다.
+`game-data`에는 기존 대국을, `caddy-data`에는 인증서와 CA를, `caddy-config`에는 프록시 설정 상태를 보존합니다. 기존 Compose 프로젝트명과 `game-data` 볼륨을 그대로 사용하므로 업데이트 시 저장된 방이 유지됩니다. `docker compose down -v`는 이 데이터를 모두 삭제합니다. 로컬 CA 볼륨을 삭제하면 새 CA 인증서를 다시 신뢰 등록해야 합니다.
 
-도메인 배포에서는 Caddy/Nginx 등의 HTTPS 리버스 프록시를 앞에 두고, WebSocket Upgrade와 원래 Host 헤더를 전달하세요. 브라우저는 HTTPS에서 자동으로 WSS를 사용합니다. 예시 Caddyfile:
+HTTP 개발 서버가 필요하면 `npm start`로 <http://localhost:3000>에서 실행하세요. `PORT=8080 npm start`로 개발 서버 포트를 바꿀 수 있습니다. HTTP와 HTTPS는 브라우저 저장소가 별개이므로 기존 HTTP 주소의 오프라인 저장·재접속 정보가 HTTPS로 자동 이전되지는 않습니다. 서버에 저장된 방 데이터는 유지됩니다.
 
-```caddyfile
-play.example.com {
-    reverse_proxy 127.0.0.1:3000
-}
+로컬 HTTPS 배포 검증은 루트 인증서를 추출한 뒤 실행할 수 있습니다. 인증서 검증을 끄지 않고 HTTPS 응답, HTTP 리다이렉트, WSS 방 생성·입장·행동 동기화를 검사합니다.
+
+```sh
+HTTPS_CA_FILE=./chessmoku-local-ca.crt npm run test:https
 ```
+
+비표준 포트에서는 `HTTPS_URL=https://localhost:8443 HTTP_PORT=8080 HTTPS_CA_FILE=./chessmoku-local-ca.crt npm run test:https`로 검사합니다. 공개 도메인은 `HTTPS_URL=https://play.example.com npm run test:https`로 검사합니다.
 
 서버는 단일 인스턴스로 운영합니다. 방 데이터는 JSON 원자적 파일 교체로 저장하며, 여러 프로세스가 같은 파일에 동시에 쓰는 구성은 지원하지 않습니다. 서버 재시작 시 클라이언트가 자동 재접속합니다. 양쪽이 오프라인인 방은 마지막 활동 후 24시간이 지나면 정리됩니다. 소규모 친선전용으로 최대 1,000개 방을 유지합니다.
 

@@ -4,3 +4,5 @@ test-results/
 playwright-report/
 .env
 __pycache__/
+
+chessmoku-local-ca.crt
