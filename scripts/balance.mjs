@@ -90,6 +90,7 @@ export function setup(variant, mirror = false) {
     g = newGame(),
     wk = mirror ? 59 : 60,
     bk = mirror ? 3 : 4;
+  g.board.fill(null);
   g.board[wk] = { type: "k", color: "w", moved: false };
   g.board[bk] = { type: "k", color: "b", moved: false };
   g.reserves.w.k = g.reserves.b.k = 0;

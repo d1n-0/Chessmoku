@@ -10,6 +10,15 @@ test("local placement, selection, five-in-row, undo, reload, reset, keyboard and
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await expect(page.locator("#board button")).toHaveCount(64);
+  await expect(page.locator('[data-square="60"]')).toHaveAttribute(
+    "aria-label",
+    "e1 백 킹",
+  );
+  await expect(page.locator('[data-square="4"]')).toHaveAttribute(
+    "aria-label",
+    "e8 흑 킹",
+  );
+  await expect(page.getByRole("button", { name: /백 킹 배치/ })).toBeDisabled();
   await place(page, "백 폰", 56);
   await place(page, "흑 나이트", 0);
   await page.locator('[data-square="56"]').click();
@@ -22,10 +31,8 @@ test("local placement, selection, five-in-row, undo, reload, reset, keyboard and
   await place(page, "백 폰", 57);
   await place(page, "흑 나이트", 2);
   await place(page, "백 폰", 58);
-  await place(page, "흑 비숍", 4);
-  await place(page, "백 폰", 59);
   await place(page, "흑 비숍", 6);
-  await place(page, "백 퀸", 60);
+  await place(page, "백 폰", 59);
   await expect(page.locator("#result-title")).toHaveText("백 승리!");
   await expect(page.locator(".winning")).toHaveCount(5);
   await page.getByRole("button", { name: "보드 살펴보기" }).click();
@@ -52,9 +59,7 @@ test("local placement, selection, five-in-row, undo, reload, reset, keyboard and
   await expect(
     rules.getByRole("heading", { name: "규칙", exact: true }),
   ).toBeVisible();
-  await expect(rules.locator("body")).toContainText(
-    "킹을 먼저 배치할 의무는 없습니다",
-  );
+  await expect(rules.locator("body")).toContainText("백 킹은 e1, 흑 킹은 e8");
   await rules.close();
   expect(errors).toEqual([]);
 });
@@ -80,13 +85,14 @@ test("two browser sessions join a room, move, reconnect, win and agree to rematc
     await expect(b.locator("#connection")).toContainText("나는 흑");
     await place(a, "백 룩", 0);
     await expect(b.locator('[data-square="0"] img')).toHaveCount(1);
-    await place(b, "흑 킹", 7);
-    await expect(a.locator('[data-square="7"] img')).toHaveCount(1);
+    await expect(b.getByRole("button", { name: /흑 킹 배치/ })).toBeDisabled();
+    await place(b, "흑 폰", 63);
+    await expect(a.locator('[data-square="63"] img')).toHaveCount(1);
     await b.reload();
     await expect(b.locator("#connection")).toContainText("나는 흑");
     await expect(a.locator("#connection")).toContainText("연결됨");
     await a.locator('[data-square="0"]').click();
-    await a.locator('[data-square="7"]').click();
+    await a.locator('[data-square="4"]').click();
     await expect(a.locator("#result-title")).toHaveText("백 승리!");
     await expect(b.locator("#result-title")).toHaveText("백 승리!");
     await a.getByRole("button", { name: "다시 대국하기" }).click();
@@ -94,6 +100,14 @@ test("two browser sessions join a room, move, reconnect, win and agree to rematc
     await b.getByRole("button", { name: "다시 대국하기" }).click();
     await expect(a.locator("#move-count")).toHaveText("0수");
     await expect(b.locator("#move-count")).toHaveText("0수");
+    await expect(a.locator('[data-square="4"]')).toHaveAttribute(
+      "aria-label",
+      "e8 흑 킹",
+    );
+    await expect(b.locator('[data-square="60"]')).toHaveAttribute(
+      "aria-label",
+      "e1 백 킹",
+    );
     await a.getByRole("button", { name: "기권", exact: true }).click();
     await a.locator("#confirm-ok").click();
     await expect(b.locator("#result-title")).toHaveText("흑 승리!");
@@ -101,4 +115,43 @@ test("two browser sessions join a room, move, reconnect, win and agree to rematc
     await ac.close();
     await bc.close();
   }
+});
+
+test("legacy local games restore without overwriting pieces and new games use placed kings", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "five-crown-local",
+      JSON.stringify({
+        history: [
+          { kind: "place", type: "q", to: 60 },
+          { kind: "place", type: "k", to: 7 },
+        ],
+        result: null,
+      }),
+    ),
+  );
+  await page.reload();
+  await expect(page.locator('[data-square="60"]')).toHaveAttribute(
+    "aria-label",
+    "e1 백 퀸",
+  );
+  await expect(page.locator('[data-square="7"]')).toHaveAttribute(
+    "aria-label",
+    "h8 흑 킹",
+  );
+  await expect(page.locator("#move-count")).toHaveText("2수");
+  await page.getByRole("button", { name: "새 대국 시작" }).click();
+  await page.locator("#confirm-ok").click();
+  await expect(page.locator('[data-square="60"]')).toHaveAttribute(
+    "aria-label",
+    "e1 백 킹",
+  );
+  await expect(page.locator('[data-square="4"]')).toHaveAttribute(
+    "aria-label",
+    "e8 흑 킹",
+  );
+  await expect(page.getByRole("button", { name: /백 킹 배치/ })).toBeDisabled();
 });

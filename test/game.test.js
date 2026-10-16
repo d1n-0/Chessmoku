@@ -7,12 +7,24 @@ import {
   findFive,
   legalTargets,
 } from "../shared/game.js";
+const emptyGame = () => newGame({ legacy: true });
 const piece = (type, color = "w", moved = false) => ({ type, color, moved });
 test("initial armies, free placement, turn ownership and immutable state", () => {
   const g = newGame();
   assert.equal(
     Object.values(g.reserves.w).reduce((a, b) => a + b),
-    16,
+    15,
+  );
+  assert.equal(g.rulesVersion, 2);
+  assert.deepEqual(g.board[60], piece("k", "w"));
+  assert.deepEqual(g.board[4], piece("k", "b"));
+  assert.equal(g.board.filter(Boolean).length, 2);
+  assert.equal(g.reserves.w.k, 0);
+  assert.equal(g.reserves.b.k, 0);
+  assert.throws(() => applyAction(g, { kind: "place", type: "k", to: 52 }));
+  assert.equal(
+    applyAction(g, { kind: "move", from: 60, to: 52 }).board[52].type,
+    "k",
   );
   const next = applyAction(g, { kind: "place", type: "q", to: 0 });
   assert.equal(next.board[0].type, "q");
@@ -30,7 +42,7 @@ test("initial armies, free placement, turn ownership and immutable state", () =>
   );
 });
 test("rook, bishop and queen paths cannot cross occupied squares", () => {
-  const g = newGame();
+  const g = emptyGame();
   g.board[27] = piece("r");
   assert.equal(canMove(g, 27, 3), true);
   assert.equal(canMove(g, 27, 0), false);
@@ -47,7 +59,7 @@ test("rook, bishop and queen paths cannot cross occupied squares", () => {
   assert.equal(canMove(g, 27, 44), false);
 });
 test("knights jump, kings step, and castling is excluded", () => {
-  const g = newGame();
+  const g = emptyGame();
   g.board[27] = piece("n");
   g.board[19] = piece("p");
   assert.equal(canMove(g, 27, 10), true);
@@ -58,7 +70,7 @@ test("knights jump, kings step, and castling is excluded", () => {
   assert.equal(canMove(g, 27, 19), false);
 });
 test("pawn direction, double step, capture, no en passant or promotion", () => {
-  const g = newGame();
+  const g = emptyGame();
   g.board[52] = piece("p");
   assert.equal(canMove(g, 52, 44), true);
   assert.equal(canMove(g, 52, 36), true);
@@ -75,13 +87,13 @@ test("pawn direction, double step, capture, no en passant or promotion", () => {
   const next = applyAction(g, { kind: "move", from: 8, to: 0 });
   assert.equal(next.board[0].type, "p");
   assert.equal(canMove(next, 0, 8), false);
-  const b = newGame();
+  const b = emptyGame();
   b.board[12] = piece("p", "b");
   assert.equal(canMove(b, 12, 28), true);
   assert.equal(canMove(b, 12, 4), false);
 });
 test("captured pieces change ownership and can be redeployed on a later turn", () => {
-  let g = newGame();
+  let g = emptyGame();
   g.board[27] = piece("r");
   g.board[3] = piece("q", "b");
   g = applyAction(g, { kind: "move", from: 27, to: 3 });
@@ -101,11 +113,11 @@ test("five in all four directions, six accepted, no edge wrapping or mixed color
     [4, 11, 18, 25, 32],
     [0, 1, 2, 3, 4, 5],
   ]) {
-    const g = newGame();
+    const g = emptyGame();
     line.forEach((i) => (g.board[i] = piece("p")));
     assert.ok(findFive(g.board, "w"));
   }
-  const g = newGame();
+  const g = emptyGame();
   [6, 7, 8, 9, 10].forEach((i) => (g.board[i] = piece("p")));
   assert.equal(findFive(g.board, "w"), null);
   g.board = Array(64).fill(null);
@@ -114,7 +126,7 @@ test("five in all four directions, six accepted, no edge wrapping or mixed color
   assert.equal(findFive(g.board, "w"), null);
 });
 test("placement and movement both win by five, game over rejects further turns", () => {
-  let g = newGame();
+  let g = emptyGame();
   [0, 1, 2, 3].forEach((i) => (g.board[i] = piece("p")));
   let n = applyAction(g, { kind: "place", type: "r", to: 4 });
   assert.equal(n.result.reason, "five");
@@ -125,7 +137,7 @@ test("placement and movement both win by five, game over rejects further turns",
   assert.equal(legalTargets(n, { type: "p" }).length, 0);
 });
 test("king capture wins without conventional check restrictions", () => {
-  const g = newGame();
+  const g = emptyGame();
   g.board[0] = piece("r");
   g.board[7] = piece("k", "b");
   const n = applyAction(g, { kind: "move", from: 0, to: 7 });
@@ -133,7 +145,7 @@ test("king capture wins without conventional check restrictions", () => {
   assert.equal(n.reserves.w.k, 2);
 });
 test("no available move or reserve produces a draw", () => {
-  const g = newGame();
+  const g = emptyGame();
   g.reserves.b = { p: 0, r: 0, n: 0, b: 0, q: 0, k: 0 };
   const n = applyAction(g, { kind: "place", type: "p", to: 5 });
   assert.equal(n.result.reason, "stalemate");

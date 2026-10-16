@@ -11,12 +11,18 @@ export const NAMES = {
 export const colorName = (c) => (c === "w" ? "백" : "흑");
 export const other = (c) => (c === "w" ? "b" : "w");
 export const squareName = (i) => "abcdefgh"[i % 8] + (8 - Math.floor(i / 8));
-export function newGame() {
+export function newGame({ legacy = false } = {}) {
+  const board = Array(64).fill(null);
+  if (!legacy) {
+    board[60] = { type: "k", color: "w", moved: false };
+    board[4] = { type: "k", color: "b", moved: false };
+  }
   return {
-    board: Array(64).fill(null),
+    rulesVersion: legacy ? 1 : 2,
+    board,
     reserves: {
-      w: { p: 8, r: 2, b: 2, n: 2, k: 1, q: 1 },
-      b: { p: 8, r: 2, b: 2, n: 2, k: 1, q: 1 },
+      w: { p: 8, r: 2, b: 2, n: 2, k: legacy ? 1 : 0, q: 1 },
+      b: { p: 8, r: 2, b: 2, n: 2, k: legacy ? 1 : 0, q: 1 },
     },
     turn: "w",
     ply: 0,

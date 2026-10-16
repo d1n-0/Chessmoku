@@ -57,7 +57,12 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     clients.push(a);
     a.sendJSON({ type: "create" });
     const sa = await a.next((m) => m.type === "session");
-    await a.next((m) => m.type === "state");
+    const initial = await a.next((m) => m.type === "state");
+    assert.equal(initial.game.rulesVersion, 2);
+    assert.equal(initial.game.board[60].type, "k");
+    assert.equal(initial.game.board[4].type, "k");
+    assert.equal(initial.game.reserves.w.k, 0);
+    assert.equal(initial.game.reserves.b.k, 0);
     a.sendJSON({
       type: "action",
       version: 0,
@@ -93,20 +98,20 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     b.sendJSON({
       type: "action",
       version: 0,
-      action: { kind: "place", type: "k", to: 7 },
+      action: { kind: "place", type: "p", to: 63 },
     });
     assert.match((await b.next((m) => m.type === "error")).message, /바뀌/);
     b.sendJSON({
       type: "action",
       version: 1,
-      action: { kind: "place", type: "k", to: 7 },
+      action: { kind: "place", type: "p", to: 63 },
     });
     await a.next((m) => m.type === "state" && m.version === 2);
     await b.next((m) => m.type === "state" && m.version === 2);
     a.sendJSON({
       type: "action",
       version: 2,
-      action: { kind: "move", from: 0, to: 7 },
+      action: { kind: "move", from: 0, to: 4 },
     });
     const win = await a.next((m) => m.type === "state" && m.version === 3);
     assert.equal(win.game.result.reason, "king");
@@ -136,6 +141,9 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     const reset = await br.next((m) => m.type === "state" && m.version === 4);
     assert.equal(reset.game.ply, 0);
     assert.equal(reset.game.result, null);
+    assert.equal(reset.game.board[60].type, "k");
+    assert.equal(reset.game.board[4].type, "k");
+    assert.equal(reset.game.reserves.w.k, 0);
     br.sendJSON({ type: "leave" });
     const left = await ar.next(
       (m) => m.type === "state" && m.game.result?.reason === "resign",

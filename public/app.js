@@ -40,7 +40,8 @@ function restoreLocal() {
   try {
     const saved = JSON.parse(storage.get("five-crown-local"));
     if (!saved) return;
-    let g = newGame();
+    // Existing saved games retain their original starting position.
+    let g = newGame({ legacy: saved.rulesVersion !== 2 });
     for (const m of saved.history) {
       undoStack.push(g);
       g = applyAction(g, {
