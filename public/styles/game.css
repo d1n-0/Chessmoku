@@ -24,7 +24,7 @@
   width: min(100%, max(360px, calc(100dvh - 72px)));
   justify-self: center;
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) 56px;
+  grid-template-columns: 100px minmax(0, 1fr) 100px;
   gap: 8px;
   align-items: center;
 }
@@ -209,15 +209,16 @@ input {
   gap: 4px;
 }
 .reserve {
-  padding: 4px;
+  min-height: 80px;
+  padding: 6px 4px;
   position: relative;
   display: grid;
   justify-items: center;
-  gap: 6px;
+  gap: 2px;
 }
 .reserve img {
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
 }
 .reserve .count {
   position: absolute;
@@ -300,7 +301,7 @@ input {
 }
 .held-piece {
   position: relative;
-  min-height: 44px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -313,15 +314,12 @@ input {
   right: 1px;
 }
 .held-piece img {
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
 }
 .reserve .name {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
+  font-size: 16px;
+  line-height: 18px;
 }
 .board-toolbar button {
   padding: 8px;
@@ -367,11 +365,20 @@ input {
   }
   .arena {
     margin: auto;
-    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
     gap: 6px;
   }
   .reserve {
-    padding: 2px;
+    min-height: 68px;
+    padding: 4px 2px;
+  }
+  .held-piece {
+    min-height: 68px;
+  }
+  .reserve img,
+  .held-piece img {
+    width: 36px;
+    height: 36px;
   }
   .square img {
     width: 85%;
