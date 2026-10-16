@@ -3,6 +3,7 @@ ENV NODE_ENV=production PORT=3000 DATA_DIR=/app/data
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
+COPY LICENSE ATTRIBUTION.md ./
 COPY public ./public
 COPY shared ./shared
 COPY server ./server

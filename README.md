@@ -142,3 +142,7 @@ PYTHONNOUSERSITE=1 python3 scripts/summarize-balance.py
 현재 권고는 **킹 선배치·5목 유지, 추가 첫 수 보정은 보류**입니다. 백 첫 수 폰 제한은 2수 탐색에서 백 승률 46.0%였지만 3수 63.7%, 4수 72.2%로 바뀌어 안정적인 보정으로 볼 수 없었습니다. 이러한 수치는 사람의 승률이나 필승 전략의 증명이 아닙니다. 실험 당시에는 서비스 규칙을 변경하지 않았으며, 이후 킹 선배치·5목 유지안을 서비스에 적용했습니다. [최종 비교 그림](analysis/balance/holdout.svg)과 [부트스트랩 구간](analysis/balance/holdout-intervals.json)을 함께 확인할 수 있습니다.
 
 브랜드명은 **Chessmoku**, npm 패키지와 Docker 이미지 이름은 `chessmoku`입니다. 기존 대국과 재접속 호환성을 위해 브라우저 저장 키와 기보 형식 식별자 `five-crown-v1`은 유지합니다. Docker Compose 프로젝트명과 데이터 볼륨도 유지합니다.
+
+## 라이선스
+
+프로젝트의 자체 코드와 문서는 [MIT License](LICENSE)를 따릅니다. 외부 기물 SVG와 글꼴은 MIT 라이선스 적용 대상에서 제외하며, 각각 기존 CC BY-SA 3.0 및 SIL OFL 1.1 라이선스를 따릅니다. 상세 출처와 적용 파일은 [ATTRIBUTION.md](ATTRIBUTION.md)에 기재되어 있습니다.

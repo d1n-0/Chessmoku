@@ -21,5 +21,6 @@
   "devDependencies": {
     "@playwright/test": "^1.56.0",
     "prettier": "3.6.2"
-  }
+  },
+  "license": "MIT"
 }
