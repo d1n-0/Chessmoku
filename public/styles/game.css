@@ -21,11 +21,12 @@
   align-items: start;
 }
 .arena {
-  width: min(100%, max(240px, calc(100dvh - 300px)));
+  width: min(100%, max(360px, calc(100dvh - 72px)));
   justify-self: center;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
   gap: 8px;
+  align-items: center;
 }
 .arena,
 .mode-sidebar,
@@ -45,7 +46,23 @@
 .turn-banner strong {
   font-weight: 700;
 }
+.turn-banner,
+.board-toolbar,
+#status-detail {
+  grid-column: 1 / -1;
+}
+.reserve-panel {
+  grid-column: 1;
+  grid-row: 2;
+}
+.opponent-panel {
+  grid-column: 3;
+  grid-row: 2;
+}
 .board-frame {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
   border: 2px solid #111;
 }
 .board {
@@ -188,8 +205,8 @@ input {
 }
 .reserves {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
 }
 .reserve {
   padding: 4px;
@@ -199,8 +216,8 @@ input {
   gap: 6px;
 }
 .reserve img {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
 }
 .reserve .count {
   position: absolute;
@@ -256,8 +273,8 @@ input {
 }
 .opponent-reserves {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 6px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
 }
 #room-queue {
   padding-left: 24px;
@@ -268,27 +285,32 @@ input {
   display: none;
 }
 
-/* Each hand is one horizontal strip instead of a separate tall card. */
+/* Keep both hands beside the board, including on compact screens. */
 .arena .panel {
-  padding: 6px 8px;
-  display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
+  min-width: 0;
+  padding: 6px 4px;
 }
 .arena .panel-title {
-  margin: 0;
+  justify-content: center;
+  margin: 0 0 8px;
   font-size: 16px;
 }
 .arena .panel-title h2 {
   display: none;
 }
 .held-piece {
+  position: relative;
+  min-height: 44px;
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: center;
   gap: 3px;
+}
+.held-piece span {
+  position: absolute;
+  top: 1px;
+  right: 1px;
 }
 .held-piece img {
   width: 28px;
@@ -345,6 +367,26 @@ input {
   }
   .arena {
     margin: auto;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    gap: 6px;
+  }
+  .reserve {
+    padding: 2px;
+  }
+  .square img {
+    width: 85%;
+    height: 85%;
+  }
+  .coord {
+    font-size: 12px;
+  }
+  .rank {
+    top: 0;
+    left: 1px;
+  }
+  .file {
+    bottom: 0;
+    right: 1px;
   }
   .mode-sidebar,
   .history-sidebar {
