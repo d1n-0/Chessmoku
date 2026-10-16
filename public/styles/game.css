@@ -408,3 +408,40 @@ input {
     display: none;
   }
 }
+
+.room-name-form,
+.color-options {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.room-name-form input {
+  min-width: 0;
+  width: 100%;
+}
+.color-options button {
+  flex: 1;
+}
+.color-options button[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--surface);
+}
+#room-players {
+  list-style: none;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+#room-players li {
+  margin: 8px 0;
+}
+#room-queue {
+  overflow-wrap: anywhere;
+}
+.room-name-form button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.mode-sidebar .mode-panel {
+  max-height: calc(100dvh - 88px);
+  overflow-y: auto;
+}

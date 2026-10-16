@@ -61,6 +61,17 @@
             <button id="new-game" class="full">새 대국 시작</button>
           </div>
           <div id="online-controls" hidden>
+            <form id="name-form" class="room-name-form">
+              <label class="sr-only" for="player-name">이름</label>
+              <input
+                id="player-name"
+                placeholder="이름"
+                maxlength="16"
+                value="플레이어"
+                required
+              />
+              <button id="save-name" type="submit" hidden>변경</button>
+            </form>
             <div id="lobby">
               <button id="create-room" class="full">친선전 방 만들기</button>
               <form id="join-form">
@@ -83,6 +94,24 @@
                 aria-label="방 코드 복사"
               ></button>
               <p id="connection"></p>
+              <ul id="room-players" aria-label="대국자"></ul>
+              <div id="color-controls">
+                <div
+                  class="color-options"
+                  role="group"
+                  aria-label="내 색상 선택"
+                >
+                  <button id="choose-white" aria-pressed="false">백</button>
+                  <button id="choose-black" aria-pressed="false">흑</button>
+                </div>
+                <p id="color-status" aria-live="polite" hidden></p>
+                <div id="color-response" class="color-options" hidden>
+                  <button id="accept-color">수락</button>
+                  <button id="reject-color">거절</button>
+                </div>
+                <button id="cancel-color" class="full" hidden>요청 취소</button>
+              </div>
+              <button id="yield-seat" class="full" hidden>자리 양보</button>
               <p id="queue-status" aria-live="polite"></p>
               <ol id="room-queue" aria-label="방 대기열"></ol>
               <button id="leave-room" class="full">방 나가기</button>

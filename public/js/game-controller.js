@@ -10,6 +10,7 @@ import { createConnection } from "./connection.js";
 import { $ } from "./ui/dom.js";
 import { toast, confirmAction, bindDialogs } from "./ui/dialogs.js";
 import { bindLayout } from "./ui/layout.js";
+import { bindRoomControls } from "./ui/room.js";
 import { createGameView } from "./ui/game-view.js";
 
 export function startGame() {
@@ -49,6 +50,7 @@ export function startGame() {
         (room?.color &&
           connected &&
           room.joined &&
+          !room.colorRequest &&
           room.online[other(room.color)] &&
           game.turn === room.color))
     );
@@ -180,6 +182,9 @@ export function startGame() {
         if (hadResult && game.result) preserveResultDialog(game.result);
         if (oldVersion !== room.version) selection = null;
         if (firstJoin) {
+          $("player-name").value = room.color
+            ? room.players[room.color].name
+            : room.queue[room.queuePosition - 1].name;
           flipped = room.color === "b";
           closePanel();
         }
@@ -217,7 +222,7 @@ export function startGame() {
   $("create-room").onclick = () => {
     pending = true;
     render();
-    connect({ type: "create" });
+    connect({ type: "create", name: $("player-name").value });
   };
   $("join-form").onsubmit = (e) => {
     e.preventDefault();
@@ -228,8 +233,9 @@ export function startGame() {
     }
     pending = true;
     render();
-    connect({ type: "join", code });
+    connect({ type: "join", code, name: $("player-name").value });
   };
+  bindRoomControls({ send, getRoom: () => room });
   $("leave-room").onclick = () => {
     confirmAction(
       "방을 나갈까요?",

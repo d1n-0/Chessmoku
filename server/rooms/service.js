@@ -1,6 +1,8 @@
 import { randomBytes, randomInt } from "node:crypto";
 import { newGame, applyAction, other } from "../../shared/game.js";
 
+import { playerName, handleColorRequest, yieldSeat } from "./players.js";
+
 export function createRoomService({
   rooms,
   attach,
@@ -11,6 +13,7 @@ export function createRoomService({
 }) {
   return function handleMessage(socket, message) {
     if (message.type === "create") {
+      const name = playerName(message.name ?? "플레이어");
       if (socket.room) throw new Error("현재 방을 나간 뒤 새 방을 만드세요.");
       if (rooms.size >= 1000)
         throw new Error("방이 가득 찼습니다. 잠시 후 다시 시도하세요.");
@@ -31,7 +34,10 @@ export function createRoomService({
         updated: Date.now(),
         sockets: { w: null, b: null },
         queue: [],
+        names: {},
+        colorRequest: null,
       };
+      room.names[room.tokens.w] = name;
       rooms.set(code, room);
       attach(socket, room, "w");
       commit(room);
@@ -55,11 +61,14 @@ export function createRoomService({
         commit(room);
         return;
       }
+      const name = playerName(message.name ?? "플레이어");
       promote(room);
       const color = ["w", "b"].find((color) => !room.tokens[color]);
       const token = randomBytes(24).toString("hex");
       if (color) {
         room.tokens[color] = token;
+        room.names[token] = name;
+        room.colorRequest = null;
         if (room.game.ply || room.game.result) {
           room.game = newGame();
           room.version++;
@@ -68,6 +77,7 @@ export function createRoomService({
         attach(socket, room, color);
       } else {
         if (room.queue.length >= 16) throw new Error("대기열이 가득 찼습니다.");
+        room.names[token] = name;
         room.queue.push({ token, socket: null });
         attach(socket, room, null, token);
       }
@@ -79,7 +89,14 @@ export function createRoomService({
     const queued = room?.queue.find((entry) => entry.socket === socket);
     if (!room || (!queued && room.sockets[color] !== socket))
       throw new Error("먼저 방에 입장하세요.");
+    if (message.type === "rename") {
+      const token = queued?.token || room.tokens[color];
+      room.names[token] = playerName(message.name);
+      commit(room);
+      return;
+    }
     if (message.type === "leave") {
+      delete room.names[queued?.token || room.tokens[color]];
       if (color && room.tokens.w && room.tokens.b && !room.game.result) {
         room.game.result = {
           winner: other(color),
@@ -92,6 +109,7 @@ export function createRoomService({
       if (queued) room.queue = room.queue.filter((entry) => entry !== queued);
       else {
         room.tokens[color] = null;
+        room.colorRequest = null;
         room.rematch = [];
       }
       promote(room);
@@ -100,7 +118,13 @@ export function createRoomService({
       return;
     }
     if (!color) throw new Error("대기 중에는 대국을 조작할 수 없습니다.");
-    if (message.type === "action") {
+    if (["choose-color", "color-response"].includes(message.type)) {
+      handleColorRequest(room, color, message);
+    } else if (message.type === "yield-seat") {
+      yieldSeat(room, socket, { attach, promote });
+    } else if (message.type === "action") {
+      if (room.colorRequest)
+        throw new Error("색상 변경 요청을 수락하거나 취소해 주세요.");
       if (!room.sockets[other(color)] || !room.tokens.b)
         throw new Error("상대가 연결될 때까지 기다려 주세요.");
       if (message.version !== room.version)
@@ -110,6 +134,7 @@ export function createRoomService({
     } else if (message.type === "resign") {
       if (room.game.result || !room.tokens.w || !room.tokens.b)
         throw new Error("진행 중인 대국이 없습니다.");
+      room.colorRequest = null;
       room.game.result = { winner: other(color), reason: "resign", line: [] };
       room.version++;
     } else if (message.type === "rematch") {

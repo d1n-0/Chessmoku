@@ -25,8 +25,18 @@ export function createRoomConnections({ rooms, persist }) {
         code: room.code,
         color,
         queuePosition: position,
+        colorRequest: room.colorRequest || null,
+        players: Object.fromEntries(
+          ["w", "b"].map((c) => [
+            c,
+            room.tokens[c]
+              ? { name: room.names[room.tokens[c]] || "플레이어" }
+              : null,
+          ]),
+        ),
         queue: room.queue.map((entry, index) => ({
           position: index + 1,
+          name: room.names[entry.token] || "플레이어",
           online: entry.socket?.readyState === WebSocket.OPEN,
         })),
         game: room.game,
@@ -48,8 +58,10 @@ export function createRoomConnections({ rooms, persist }) {
   function detach(socket) {
     const room = rooms.get(socket.room);
     if (room) {
-      if (socket.color && room.sockets[socket.color] === socket)
+      if (socket.color && room.sockets[socket.color] === socket) {
         room.sockets[socket.color] = null;
+        room.colorRequest = null;
+      }
       const entry = room.queue.find((entry) => entry.socket === socket);
       if (entry) entry.socket = null;
       broadcast(room);
@@ -89,6 +101,7 @@ export function createRoomConnections({ rooms, persist }) {
       room.game = newGame();
       room.version++;
       room.rematch = [];
+      room.colorRequest = null;
     }
   }
   return { send, broadcast, commit, detach, attach, promote };

@@ -3,6 +3,7 @@ import { $ } from "./dom.js";
 import { renderBoard } from "./board.js";
 import { renderReserves } from "./reserves.js";
 import { renderHistory } from "./history.js";
+import { renderRoom } from "./room.js";
 
 export function createGameView() {
   let lastResult = null;
@@ -48,17 +49,7 @@ export function createGameView() {
               ? "상대 재접속 대기"
               : `연결됨 · 나는 ${colorName(room.color)}`;
     }
-    if (room) {
-      $("queue-status").textContent = room.color
-        ? `대기 ${room.queue.length}명`
-        : `대기 ${room.queuePosition}번`;
-      $("room-queue").replaceChildren();
-      for (const entry of room.queue) {
-        const item = document.createElement("li");
-        item.textContent = `대기 ${entry.position}${entry.position === room.queuePosition ? " · 나" : ""}${entry.online ? "" : " · 재접속 대기"}`;
-        $("room-queue").append(item);
-      }
-    }
+    renderRoom({ room, connected, pending });
     $("play-again").hidden =
       mode === "online" && (!room?.color || !room.joined);
     $("create-room").disabled = pending;
@@ -89,6 +80,9 @@ export function createGameView() {
         : "무승부";
       detail = "";
       if (room?.rematch?.length) detail = "재대국 요청 중";
+    }
+    if (room?.colorRequest && !game.result) {
+      detail = "색상 변경 요청 · 대국 메뉴에서 확인";
     }
     $("status-title").textContent = title;
     $("status-detail").textContent = detail;

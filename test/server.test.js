@@ -345,3 +345,87 @@ test("offline waiters are skipped, white seats can be filled and queue cancellat
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("player names, consensual colors, credential ownership and yielding seats", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-players-"));
+  let app = await launch(dir);
+  const sockets = [];
+  const connect = async () => {
+    const socket = await client(app.url);
+    sockets.push(socket);
+    return socket;
+  };
+  try {
+    const a = await connect();
+    a.sendJSON({ type: "create", name: "가람" });
+    const sa = await a.next((m) => m.type === "session");
+    a.sendJSON({ type: "choose-color", color: "b" });
+    const solo = await a.next((m) => m.type === "state" && m.color === "b");
+    assert.equal(solo.players.b.name, "가람");
+    const b = await connect();
+    b.sendJSON({ type: "join", code: sa.code, name: "나래" });
+    const sb = await b.next((m) => m.type === "session");
+    assert.equal(sb.color, "w");
+    a.sendJSON({ type: "choose-color", color: "w" });
+    await b.next((m) => m.type === "state" && m.colorRequest === "b");
+    a.sendJSON({ type: "color-response", accept: true });
+    assert.match((await a.next((m) => m.type === "error")).message, /상대만/);
+    b.sendJSON({
+      type: "action",
+      version: solo.version,
+      action: { kind: "place", type: "p", to: 48 },
+    });
+    assert.match((await b.next((m) => m.type === "error")).message, /색상/);
+    b.sendJSON({ type: "color-response", accept: false });
+    await a.next((m) => m.type === "state" && m.joined && !m.colorRequest);
+    a.sendJSON({ type: "choose-color", color: "w" });
+    await b.next((m) => m.type === "state" && m.colorRequest === "b");
+    b.sendJSON({ type: "color-response", accept: true });
+    const swapped = await a.next(
+      (m) => m.type === "state" && m.color === "w" && m.version > solo.version,
+    );
+    assert.equal(swapped.players.w.name, "가람");
+    assert.equal(app.rooms.get(sa.code).tokens.w, sa.token);
+    a.sendJSON({
+      type: "action",
+      version: swapped.version,
+      action: { kind: "place", type: "p", to: 48 },
+    });
+    await b.next((m) => m.type === "state" && m.game.ply === 1);
+    a.sendJSON({ type: "choose-color", color: "b" });
+    assert.match((await a.next((m) => m.type === "error")).message, /첫 수/);
+    const c = await connect();
+    c.sendJSON({ type: "join", code: sa.code, name: "다온" });
+    const sc = await c.next((m) => m.type === "session");
+    c.sendJSON({ type: "choose-color", color: "w" });
+    assert.match((await c.next((m) => m.type === "error")).message, /대기 중/);
+    c.sendJSON({ type: "rename", name: "새 이름" });
+    const renamed = await a.next(
+      (m) => m.type === "state" && m.queue[0]?.name === "새 이름",
+    );
+    assert.equal(JSON.stringify(renamed).includes(sc.token), false);
+    c.sendJSON({ type: "rename", name: "x".repeat(17) });
+    await c.next((m) => m.type === "error");
+    a.sendJSON({ type: "yield-seat" });
+    const yielded = await a.next((m) => m.type === "state" && m.color === null);
+    assert.equal(yielded.queuePosition, 1);
+    assert.equal(yielded.queue[0].name, "가람");
+    assert.equal(yielded.players.w.name, "새 이름");
+    assert.equal(yielded.game.ply, 0);
+    assert.equal(app.rooms.get(sa.code).tokens.w, sc.token);
+    await app.stop();
+    app = await launch(dir);
+    const resumed = await connect();
+    resumed.sendJSON({ type: "resume", code: sa.code, token: sb.token });
+    const session = await resumed.next((m) => m.type === "session");
+    assert.equal(session.color, "b");
+    const restored = await resumed.next((m) => m.type === "state");
+    assert.equal(restored.players.w.name, "새 이름");
+    assert.equal(restored.players.b.name, "나래");
+    assert.equal(restored.queue[0].name, "가람");
+  } finally {
+    sockets.forEach((socket) => socket.terminate());
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

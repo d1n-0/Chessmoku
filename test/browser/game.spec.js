@@ -312,3 +312,62 @@ test("theme follows system, persists manual choice and syncs the rules page", as
   ).toBe(true);
   await rules.close();
 });
+
+test("room roster, color agreement and seat handoff work through the UI", async ({
+  browser,
+}) => {
+  const contexts = await Promise.all([0, 1, 2].map(() => browser.newContext()));
+  const [a, b, c] = await Promise.all(
+    contexts.map((context) => context.newPage()),
+  );
+  try {
+    for (const page of [a, b, c]) {
+      await page.goto("/");
+      await page.locator("#online-mode").click();
+    }
+    await a.locator("#player-name").fill("가람");
+    await a.locator("#create-room").click();
+    await expect(a.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+    const code = await a.locator("#copy-code").textContent();
+    for (const [page, name] of [
+      [b, "나래"],
+      [c, "다온"],
+    ]) {
+      await page.locator("#player-name").fill(name);
+      await page.locator("#room-input").fill(code);
+      await page.locator("#join-form button").click();
+      await expect(page.locator("#copy-code")).toHaveText(code);
+    }
+    await expect(a.locator("#room-players")).toContainText("백 · 가람 · 나");
+    await a.locator("#choose-black").click();
+    await expect(b.locator("#color-status")).toContainText("요청했습니다");
+    await expect(a.getByRole("button", { name: /백 룩 배치/ })).toBeDisabled();
+    await b.locator("#reject-color").click();
+    await expect(a.locator("#color-status")).toBeHidden();
+    await a.locator("#choose-black").click();
+    await b.locator("#accept-color").click();
+    await expect(a.locator("#connection")).toContainText("나는 흑");
+    await expect(b.locator("#room-players")).toContainText("백 · 나래 · 나");
+    await a.reload();
+    await expect(a.locator("#player-name")).toHaveValue("가람");
+    await expect(a.locator("#connection")).toContainText("나는 흑");
+    await c.locator("#player-name").fill("새 이름");
+    await c.locator("#save-name").click();
+    await expect(a.locator("#room-queue")).toContainText("새 이름");
+    await a.locator("#yield-seat").click();
+    await a.locator("#confirm-ok").click();
+    await expect(a.locator("#queue-status")).toHaveText("대기 1번");
+    await expect(c.locator("#connection")).toContainText("나는 흑");
+    await expect(b.locator("#room-players")).toContainText("흑 · 새 이름");
+    await expect(a.locator("#room-queue")).toContainText("가람 · 나");
+    await b.screenshot({ path: "test-results/room-management.png" });
+    await place(b, "백 폰", 48);
+    await expect(c.locator("#choose-white")).toBeDisabled();
+    await c.setViewportSize({ width: 390, height: 844 });
+    await c.locator("#open-mode").click();
+    await expect(c.locator("#room-players")).toBeVisible();
+    await c.screenshot({ path: "test-results/room-management-mobile.png" });
+  } finally {
+    await Promise.all(contexts.map((context) => context.close()));
+  }
+});

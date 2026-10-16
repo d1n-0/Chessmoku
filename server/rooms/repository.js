@@ -10,6 +10,8 @@ export function createRoomRepository(dataDir) {
     for (const room of JSON.parse(readFileSync(file, "utf8")))
       rooms.set(room.code, {
         ...room,
+        names: room.names || {},
+        colorRequest: null,
         sockets: { w: null, b: null },
         queue: (room.queue || []).map(({ token }) => ({ token, socket: null })),
       });
