@@ -1,0 +1,1644 @@
+{
+  "total_games": 6480,
+  "color_reflection_pairs_verified": 648,
+  "rows": [
+    {
+      "phase": "screening",
+      "variant": "blackFirstControl",
+      "label": "대조군: 킹 선배치 · 흑 선공",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 19,
+      "black": 83,
+      "repetition": 3,
+      "limit": 3,
+      "no_action": 0,
+      "white_decisive_pct": 18.6,
+      "finish_pct": 94.4,
+      "king_wins": 50,
+      "line_wins": 52,
+      "median_finished_plies": 29.0,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 1,
+          "black": 11,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 1,
+          "black": 10,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 1,
+          "black": 11,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "whiteKingFirst5",
+      "label": "백 첫 수 킹 이동만",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 24,
+      "black": 79,
+      "repetition": 2,
+      "limit": 3,
+      "no_action": 0,
+      "white_decisive_pct": 23.3,
+      "finish_pct": 95.4,
+      "king_wins": 45,
+      "line_wins": 58,
+      "median_finished_plies": 33,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 4,
+          "black": 8,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 2,
+          "black": 10,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "blackCenterPawn5",
+      "label": "흑 폰 e5 선배치",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 19,
+      "black": 89,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 17.6,
+      "finish_pct": 100.0,
+      "king_wins": 56,
+      "line_wins": 52,
+      "median_finished_plies": 10.5,
+      "unique_first_actions": 6,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 2,
+          "black": 10,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 3,
+          "black": 9,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "blackTwoPawns5",
+      "label": "흑 폰 d7·f7 선배치",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 0,
+      "black": 108,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 0.0,
+      "finish_pct": 100.0,
+      "king_wins": 32,
+      "line_wins": 76,
+      "median_finished_plies": 38.0,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "kings5",
+      "label": "킹 선배치 · 자유 첫 수",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 83,
+      "black": 19,
+      "repetition": 3,
+      "limit": 3,
+      "no_action": 0,
+      "white_decisive_pct": 81.4,
+      "finish_pct": 94.4,
+      "king_wins": 50,
+      "line_wins": 52,
+      "median_finished_plies": 29.0,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 10,
+          "black": 1,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "whitePawnHome5",
+      "label": "백 첫 수 자기 진영 폰",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 93,
+      "black": 12,
+      "repetition": 2,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 88.6,
+      "finish_pct": 97.2,
+      "king_wins": 32,
+      "line_wins": 73,
+      "median_finished_plies": 23,
+      "unique_first_actions": 2,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 12,
+          "black": 0,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 8,
+          "black": 4,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 12,
+          "black": 0,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "whiteHome5",
+      "label": "백 첫 수 자기 진영 기물",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 84,
+      "black": 19,
+      "repetition": 5,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 81.6,
+      "finish_pct": 95.4,
+      "king_wins": 38,
+      "line_wins": 65,
+      "median_finished_plies": 35,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 9,
+          "black": 3,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 8,
+          "black": 3,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 11,
+          "black": 0,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "blackPawn5",
+      "label": "흑 폰 e7 선배치",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 59,
+      "black": 48,
+      "repetition": 1,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 55.1,
+      "finish_pct": 99.1,
+      "king_wins": 41,
+      "line_wins": 66,
+      "median_finished_plies": 32,
+      "unique_first_actions": 9,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 7,
+          "black": 5,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 7,
+          "black": 5,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 7,
+          "black": 4,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "fixedWhite5",
+      "label": "백 폰 e2 고정 후 흑 차례",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 48,
+      "black": 59,
+      "repetition": 1,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 44.9,
+      "finish_pct": 99.1,
+      "king_wins": 41,
+      "line_wins": 66,
+      "median_finished_plies": 32,
+      "unique_first_actions": 9,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 5,
+          "black": 7,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 5,
+          "black": 7,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 4,
+          "black": 7,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "bothHome5",
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 87,
+      "black": 16,
+      "repetition": 2,
+      "limit": 3,
+      "no_action": 0,
+      "white_decisive_pct": 84.5,
+      "finish_pct": 95.4,
+      "king_wins": 43,
+      "line_wins": 60,
+      "median_finished_plies": 31,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 9,
+          "black": 2,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 10,
+          "black": 2,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "homeDrops5",
+      "label": "모든 배치는 자기 진영",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 69,
+      "black": 33,
+      "repetition": 6,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 67.6,
+      "finish_pct": 94.4,
+      "king_wins": 18,
+      "line_wins": 84,
+      "median_finished_plies": 27.0,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 7,
+          "black": 5,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 9,
+          "black": 3,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 10,
+          "black": 0,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "kings4",
+      "label": "킹 선배치 · 4목",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 93,
+      "black": 15,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 86.1,
+      "finish_pct": 100.0,
+      "king_wins": 41,
+      "line_wins": 67,
+      "median_finished_plies": 13.0,
+      "unique_first_actions": 7,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 10,
+          "black": 2,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 10,
+          "black": 2,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "screening",
+      "variant": "whitePawnHome4",
+      "label": "백 첫 수 자기 진영 폰 · 4목",
+      "depth": 1,
+      "width": 6,
+      "n": 108,
+      "white": 93,
+      "black": 15,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 86.1,
+      "finish_pct": 100.0,
+      "king_wins": 37,
+      "line_wins": 71,
+      "median_finished_plies": 9.0,
+      "unique_first_actions": 4,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 12,
+          "black": 0,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 10,
+          "black": 2,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "blackFirstControl",
+      "label": "대조군: 킹 선배치 · 흑 선공",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 77,
+      "black": 137,
+      "repetition": 1,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 36.0,
+      "finish_pct": 99.1,
+      "king_wins": 147,
+      "line_wins": 67,
+      "median_finished_plies": 23.0,
+      "unique_first_actions": 11,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 7,
+          "black": 17,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 11,
+          "black": 11,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 9,
+          "black": 15,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "whiteKingFirst5",
+      "label": "백 첫 수 킹 이동만",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 44,
+      "black": 169,
+      "repetition": 3,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 20.7,
+      "finish_pct": 98.6,
+      "king_wins": 150,
+      "line_wins": 63,
+      "median_finished_plies": 22,
+      "unique_first_actions": 6,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 3,
+          "black": 21,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 6,
+          "black": 15,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 0,
+          "black": 24,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "blackCenterPawn5",
+      "label": "흑 폰 e5 선배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 141,
+      "black": 75,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 65.3,
+      "finish_pct": 100.0,
+      "king_wins": 153,
+      "line_wins": 63,
+      "median_finished_plies": 21.0,
+      "unique_first_actions": 13,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 9,
+          "black": 15,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 14,
+          "black": 10,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 24,
+          "black": 0,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "blackTwoPawns5",
+      "label": "흑 폰 d7·f7 선배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 88,
+      "black": 127,
+      "repetition": 1,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 40.9,
+      "finish_pct": 99.5,
+      "king_wins": 135,
+      "line_wins": 80,
+      "median_finished_plies": 21,
+      "unique_first_actions": 13,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 8,
+          "black": 16,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 7,
+          "black": 17,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "kings5",
+      "label": "킹 선배치 · 자유 첫 수",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 137,
+      "black": 77,
+      "repetition": 1,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 64.0,
+      "finish_pct": 99.1,
+      "king_wins": 147,
+      "line_wins": 67,
+      "median_finished_plies": 23.0,
+      "unique_first_actions": 11,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 17,
+          "black": 7,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 11,
+          "black": 11,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "whitePawnHome5",
+      "label": "백 첫 수 자기 진영 폰",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 99,
+      "black": 116,
+      "repetition": 1,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 46.0,
+      "finish_pct": 99.5,
+      "king_wins": 90,
+      "line_wins": 125,
+      "median_finished_plies": 18,
+      "unique_first_actions": 2,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 21,
+          "black": 3,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 9,
+          "black": 14,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 0,
+          "black": 24,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "whiteHome5",
+      "label": "백 첫 수 자기 진영 기물",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 132,
+      "black": 81,
+      "repetition": 3,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 62.0,
+      "finish_pct": 98.6,
+      "king_wins": 137,
+      "line_wins": 76,
+      "median_finished_plies": 23,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 23,
+          "black": 1,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 12,
+          "black": 12,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 12,
+          "black": 12,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "blackPawn5",
+      "label": "흑 폰 e7 선배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 161,
+      "black": 55,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 74.5,
+      "finish_pct": 100.0,
+      "king_wins": 101,
+      "line_wins": 115,
+      "median_finished_plies": 21.0,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 17,
+          "black": 7,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 16,
+          "black": 8,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "fixedWhite5",
+      "label": "백 폰 e2 고정 후 흑 차례",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 55,
+      "black": 161,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 25.5,
+      "finish_pct": 100.0,
+      "king_wins": 101,
+      "line_wins": 115,
+      "median_finished_plies": 21.0,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 7,
+          "black": 17,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 9,
+          "black": 15,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 8,
+          "black": 16,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "bothHome5",
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 106,
+      "black": 110,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 49.1,
+      "finish_pct": 100.0,
+      "king_wins": 134,
+      "line_wins": 82,
+      "median_finished_plies": 22.0,
+      "unique_first_actions": 9,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 17,
+          "black": 7,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 7,
+          "black": 17,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 11,
+          "black": 13,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "homeDrops5",
+      "label": "모든 배치는 자기 진영",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 134,
+      "black": 77,
+      "repetition": 5,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 63.5,
+      "finish_pct": 97.7,
+      "king_wins": 59,
+      "line_wins": 152,
+      "median_finished_plies": 22,
+      "unique_first_actions": 9,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 19,
+          "black": 5,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 14,
+          "black": 8,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 12,
+          "black": 12,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "kings4",
+      "label": "킹 선배치 · 4목",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 140,
+      "black": 76,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 64.8,
+      "finish_pct": 100.0,
+      "king_wins": 120,
+      "line_wins": 96,
+      "median_finished_plies": 12.0,
+      "unique_first_actions": 14,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 20,
+          "black": 4,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deeper",
+      "variant": "whitePawnHome4",
+      "label": "백 첫 수 자기 진영 폰 · 4목",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 110,
+      "black": 106,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 50.9,
+      "finish_pct": 100.0,
+      "king_wins": 66,
+      "line_wins": 150,
+      "median_finished_plies": 14.0,
+      "unique_first_actions": 4,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 21,
+          "black": 3,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 10,
+          "black": 14,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 16,
+          "black": 8,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "kings5",
+      "label": "킹 선배치 · 자유 첫 수",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 49,
+      "black": 53,
+      "repetition": 4,
+      "limit": 2,
+      "no_action": 0,
+      "white_decisive_pct": 48.0,
+      "finish_pct": 94.4,
+      "king_wins": 45,
+      "line_wins": 57,
+      "median_finished_plies": 34.0,
+      "unique_first_actions": 16,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 2,
+          "black": 9,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 2,
+          "black": 9,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 5,
+          "black": 6,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "whitePawnHome5",
+      "label": "백 첫 수 자기 진영 폰",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 65,
+      "black": 37,
+      "repetition": 2,
+      "limit": 4,
+      "no_action": 0,
+      "white_decisive_pct": 63.7,
+      "finish_pct": 94.4,
+      "king_wins": 31,
+      "line_wins": 71,
+      "median_finished_plies": 19.0,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 8,
+          "black": 3,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 5,
+          "black": 5,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "whiteKingFirst5",
+      "label": "백 첫 수 킹 이동만",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 50,
+      "black": 56,
+      "repetition": 1,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 47.2,
+      "finish_pct": 98.1,
+      "king_wins": 45,
+      "line_wins": 61,
+      "median_finished_plies": 36.0,
+      "unique_first_actions": 6,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 7,
+          "black": 5,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 5,
+          "black": 6,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 5,
+          "black": 7,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "blackPawn5",
+      "label": "흑 폰 e7 선배치",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 93,
+      "black": 15,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 86.1,
+      "finish_pct": 100.0,
+      "king_wins": 8,
+      "line_wins": 100,
+      "median_finished_plies": 9.0,
+      "unique_first_actions": 13,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 11,
+          "black": 1,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 12,
+          "black": 0,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 9,
+          "black": 3,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "blackCenterPawn5",
+      "label": "흑 폰 e5 선배치",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 27,
+      "black": 81,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 25.0,
+      "finish_pct": 100.0,
+      "king_wins": 26,
+      "line_wins": 82,
+      "median_finished_plies": 12.0,
+      "unique_first_actions": 15,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 0,
+          "black": 12,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 4,
+          "black": 8,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "homeDrops5",
+      "label": "모든 배치는 자기 진영",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 56,
+      "black": 45,
+      "repetition": 3,
+      "limit": 4,
+      "no_action": 0,
+      "white_decisive_pct": 55.4,
+      "finish_pct": 93.5,
+      "king_wins": 29,
+      "line_wins": 72,
+      "median_finished_plies": 26,
+      "unique_first_actions": 14,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 6,
+          "black": 5,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 4,
+          "black": 7,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 9,
+          "black": 2,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "deepest",
+      "variant": "kings4",
+      "label": "킹 선배치 · 4목",
+      "depth": 3,
+      "width": 6,
+      "n": 108,
+      "white": 74,
+      "black": 20,
+      "repetition": 14,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 78.7,
+      "finish_pct": 87.0,
+      "king_wins": 27,
+      "line_wins": 67,
+      "median_finished_plies": 33.0,
+      "unique_first_actions": 13,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 10,
+          "black": 0,
+          "n": 12
+        },
+        {
+          "profile": "balanced",
+          "white": 9,
+          "black": 2,
+          "n": 12
+        },
+        {
+          "profile": "material",
+          "white": 8,
+          "black": 3,
+          "n": 12
+        }
+      ]
+    },
+    {
+      "phase": "followup",
+      "variant": "blackPawnE6",
+      "label": "흑 폰 e6 선배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 146,
+      "black": 70,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 67.6,
+      "finish_pct": 100.0,
+      "king_wins": 157,
+      "line_wins": 59,
+      "median_finished_plies": 27.5,
+      "unique_first_actions": 9,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 18,
+          "black": 6,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 18,
+          "black": 6,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 20,
+          "black": 4,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "followup",
+      "variant": "blackPawnD7",
+      "label": "흑 폰 d7 선배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 162,
+      "black": 54,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 75.0,
+      "finish_pct": 100.0,
+      "king_wins": 140,
+      "line_wins": 76,
+      "median_finished_plies": 17.0,
+      "unique_first_actions": 12,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 15,
+          "black": 9,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 21,
+          "black": 3,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 24,
+          "black": 0,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "followup",
+      "variant": "whitePawnRank2",
+      "label": "백 첫 수 2행 폰 배치",
+      "depth": 2,
+      "width": 12,
+      "n": 216,
+      "white": 62,
+      "black": 154,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 28.7,
+      "finish_pct": 100.0,
+      "king_wins": 118,
+      "line_wins": 98,
+      "median_finished_plies": 22.5,
+      "unique_first_actions": 2,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 13,
+          "black": 11,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 12,
+          "black": 12,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 2,
+          "black": 22,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "variant": "kings5",
+      "label": "킹 선배치 · 자유 첫 수",
+      "depth": 4,
+      "width": 6,
+      "n": 72,
+      "white": 41,
+      "black": 28,
+      "repetition": 2,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 59.4,
+      "finish_pct": 95.8,
+      "king_wins": 41,
+      "line_wins": 28,
+      "median_finished_plies": 25,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 2,
+          "black": 6,
+          "n": 8
+        },
+        {
+          "profile": "balanced",
+          "white": 7,
+          "black": 0,
+          "n": 8
+        },
+        {
+          "profile": "material",
+          "white": 7,
+          "black": 0,
+          "n": 8
+        }
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "variant": "whitePawnHome5",
+      "label": "백 첫 수 자기 진영 폰",
+      "depth": 4,
+      "width": 6,
+      "n": 72,
+      "white": 52,
+      "black": 20,
+      "repetition": 0,
+      "limit": 0,
+      "no_action": 0,
+      "white_decisive_pct": 72.2,
+      "finish_pct": 100.0,
+      "king_wins": 64,
+      "line_wins": 8,
+      "median_finished_plies": 10.0,
+      "unique_first_actions": 5,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 8,
+          "black": 0,
+          "n": 8
+        },
+        {
+          "profile": "balanced",
+          "white": 8,
+          "black": 0,
+          "n": 8
+        },
+        {
+          "profile": "material",
+          "white": 2,
+          "black": 6,
+          "n": 8
+        }
+      ]
+    },
+    {
+      "phase": "confirmation",
+      "variant": "bothHome5",
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "depth": 4,
+      "width": 6,
+      "n": 72,
+      "white": 46,
+      "black": 24,
+      "repetition": 1,
+      "limit": 1,
+      "no_action": 0,
+      "white_decisive_pct": 65.7,
+      "finish_pct": 97.2,
+      "king_wins": 43,
+      "line_wins": 27,
+      "median_finished_plies": 25.0,
+      "unique_first_actions": 8,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 4,
+          "black": 4,
+          "n": 8
+        },
+        {
+          "profile": "balanced",
+          "white": 8,
+          "black": 0,
+          "n": 8
+        },
+        {
+          "profile": "material",
+          "white": 7,
+          "black": 1,
+          "n": 8
+        }
+      ]
+    },
+    {
+      "phase": "holdout",
+      "variant": "kings5",
+      "label": "킹 선배치 · 자유 첫 수",
+      "depth": 4,
+      "width": 8,
+      "n": 216,
+      "white": 121,
+      "black": 85,
+      "repetition": 8,
+      "limit": 2,
+      "no_action": 0,
+      "white_decisive_pct": 58.7,
+      "finish_pct": 95.4,
+      "king_wins": 150,
+      "line_wins": 56,
+      "median_finished_plies": 23.0,
+      "unique_first_actions": 13,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 2,
+          "black": 22,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 16,
+          "black": 5,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 23,
+          "black": 1,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "holdout",
+      "variant": "bothHome5",
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "depth": 4,
+      "width": 8,
+      "n": 216,
+      "white": 127,
+      "black": 81,
+      "repetition": 5,
+      "limit": 3,
+      "no_action": 0,
+      "white_decisive_pct": 61.1,
+      "finish_pct": 96.3,
+      "king_wins": 138,
+      "line_wins": 70,
+      "median_finished_plies": 23.0,
+      "unique_first_actions": 12,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 8,
+          "black": 16,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 17,
+          "black": 6,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 22,
+          "black": 0,
+          "n": 24
+        }
+      ]
+    },
+    {
+      "phase": "wider",
+      "variant": "bothHome5",
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "depth": 3,
+      "width": 12,
+      "n": 216,
+      "white": 142,
+      "black": 69,
+      "repetition": 1,
+      "limit": 4,
+      "no_action": 0,
+      "white_decisive_pct": 67.3,
+      "finish_pct": 97.7,
+      "king_wins": 87,
+      "line_wins": 124,
+      "median_finished_plies": 29,
+      "unique_first_actions": 19,
+      "self_play": [
+        {
+          "profile": "line",
+          "white": 18,
+          "black": 5,
+          "n": 24
+        },
+        {
+          "profile": "balanced",
+          "white": 13,
+          "black": 9,
+          "n": 24
+        },
+        {
+          "profile": "material",
+          "white": 19,
+          "black": 5,
+          "n": 24
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "bothHome5": {
+    "label": "양쪽 첫 수 자기 진영 배치",
+    "n": 216,
+    "w": 142,
+    "b": 69,
+    "king": 87,
+    "line": 124,
+    "repetition": 1,
+    "limit": 4,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 18,
+        "b": 5,
+        "unfinished": 1
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 11,
+        "b": 12,
+        "unfinished": 1
+      },
+      "line/material": {
+        "n": 24,
+        "w": 5,
+        "b": 18,
+        "unfinished": 1
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 20,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 13,
+        "b": 9,
+        "unfinished": 2
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 9,
+        "b": 15,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 23,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 19,
+        "b": 5,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.6729857819905213,
+    "finishRate": 0.9768518518518519,
+    "medianPlies": 29.5,
+    "medianFinishedPlies": 29
+  }
+}

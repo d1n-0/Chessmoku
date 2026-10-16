@@ -1,0 +1,925 @@
+{
+  "blackFirstControl": {
+    "label": "대조군: 킹 선배치 · 흑 선공",
+    "n": 108,
+    "w": 19,
+    "b": 83,
+    "king": 50,
+    "line": 52,
+    "repetition": 3,
+    "limit": 3,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 1,
+        "b": 11,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 0,
+        "b": 11,
+        "unfinished": 1
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 7,
+        "b": 5,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 1,
+        "b": 10,
+        "unfinished": 1
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 0,
+        "b": 10,
+        "unfinished": 2
+      },
+      "material/line": {
+        "n": 12,
+        "w": 6,
+        "b": 5,
+        "unfinished": 1
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 3,
+        "b": 8,
+        "unfinished": 1
+      },
+      "material/material": {
+        "n": 12,
+        "w": 1,
+        "b": 11,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.18627450980392157,
+    "finishRate": 0.9444444444444444,
+    "medianPlies": 31,
+    "medianFinishedPlies": 29
+  },
+  "whiteKingFirst5": {
+    "label": "백 첫 수 킹 이동만",
+    "n": 108,
+    "w": 24,
+    "b": 79,
+    "king": 45,
+    "line": 58,
+    "repetition": 2,
+    "limit": 3,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 4,
+        "b": 8,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 4,
+        "b": 8,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 3,
+        "b": 9,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 2,
+        "b": 10,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 0,
+        "b": 10,
+        "unfinished": 2
+      },
+      "material/line": {
+        "n": 12,
+        "w": 5,
+        "b": 6,
+        "unfinished": 1
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 6,
+        "b": 4,
+        "unfinished": 2
+      },
+      "material/material": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.23300970873786409,
+    "finishRate": 0.9537037037037037,
+    "medianPlies": 35,
+    "medianFinishedPlies": 33
+  },
+  "blackCenterPawn5": {
+    "label": "흑 폰 e5 선배치",
+    "n": 108,
+    "w": 19,
+    "b": 89,
+    "king": 56,
+    "line": 52,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 1,
+        "b": 11,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 2,
+        "b": 10,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 1,
+        "b": 11,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 2,
+        "b": 10,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 2,
+        "b": 10,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 6,
+        "b": 6,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 2,
+        "b": 10,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 3,
+        "b": 9,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.17592592592592593,
+    "finishRate": 1,
+    "medianPlies": 10.5,
+    "medianFinishedPlies": 10.5
+  },
+  "blackTwoPawns5": {
+    "label": "흑 폰 d7·f7 선배치",
+    "n": 108,
+    "w": 0,
+    "b": 108,
+    "king": 32,
+    "line": 76,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 0,
+        "b": 12,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0,
+    "finishRate": 1,
+    "medianPlies": 38,
+    "medianFinishedPlies": 38
+  },
+  "kings5": {
+    "label": "킹 선배치 · 자유 첫 수",
+    "n": 108,
+    "w": 83,
+    "b": 19,
+    "king": 50,
+    "line": 52,
+    "repetition": 3,
+    "limit": 3,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 5,
+        "b": 7,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 5,
+        "b": 6,
+        "unfinished": 1
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 1,
+        "unfinished": 1
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 8,
+        "b": 3,
+        "unfinished": 1
+      },
+      "material/line": {
+        "n": 12,
+        "w": 11,
+        "b": 0,
+        "unfinished": 1
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 0,
+        "unfinished": 2
+      },
+      "material/material": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.8137254901960784,
+    "finishRate": 0.9444444444444444,
+    "medianPlies": 31,
+    "medianFinishedPlies": 29
+  },
+  "whitePawnHome5": {
+    "label": "백 첫 수 자기 진영 폰",
+    "n": 108,
+    "w": 93,
+    "b": 12,
+    "king": 32,
+    "line": 73,
+    "repetition": 2,
+    "limit": 1,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 6,
+        "b": 6,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 11,
+        "b": 0,
+        "unfinished": 1
+      },
+      "material/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 0,
+        "unfinished": 2
+      },
+      "material/material": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.8857142857142857,
+    "finishRate": 0.9722222222222222,
+    "medianPlies": 23,
+    "medianFinishedPlies": 23
+  },
+  "whiteHome5": {
+    "label": "백 첫 수 자기 진영 기물",
+    "n": 108,
+    "w": 84,
+    "b": 19,
+    "king": 38,
+    "line": 65,
+    "repetition": 5,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 9,
+        "b": 3,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 8,
+        "b": 3,
+        "unfinished": 1
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 8,
+        "b": 3,
+        "unfinished": 1
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 8,
+        "b": 3,
+        "unfinished": 1
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 9,
+        "b": 3,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 11,
+        "b": 0,
+        "unfinished": 1
+      },
+      "material/material": {
+        "n": 12,
+        "w": 11,
+        "b": 0,
+        "unfinished": 1
+      }
+    },
+    "decisiveWhiteRate": 0.8155339805825242,
+    "finishRate": 0.9537037037037037,
+    "medianPlies": 36,
+    "medianFinishedPlies": 35
+  },
+  "blackPawn5": {
+    "label": "흑 폰 e7 선배치",
+    "n": 108,
+    "w": 59,
+    "b": 48,
+    "king": 41,
+    "line": 66,
+    "repetition": 1,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 7,
+        "b": 5,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 4,
+        "b": 8,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 4,
+        "b": 8,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 7,
+        "b": 5,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 6,
+        "b": 6,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 7,
+        "b": 5,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 9,
+        "b": 3,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 7,
+        "b": 4,
+        "unfinished": 1
+      }
+    },
+    "decisiveWhiteRate": 0.5514018691588785,
+    "finishRate": 0.9907407407407407,
+    "medianPlies": 32,
+    "medianFinishedPlies": 32
+  },
+  "fixedWhite5": {
+    "label": "백 폰 e2 고정 후 흑 차례",
+    "n": 108,
+    "w": 48,
+    "b": 59,
+    "king": 41,
+    "line": 66,
+    "repetition": 1,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 5,
+        "b": 7,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 4,
+        "b": 8,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 5,
+        "b": 7,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 5,
+        "b": 7,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 3,
+        "b": 9,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 6,
+        "b": 6,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 4,
+        "b": 7,
+        "unfinished": 1
+      }
+    },
+    "decisiveWhiteRate": 0.4485981308411215,
+    "finishRate": 0.9907407407407407,
+    "medianPlies": 32,
+    "medianFinishedPlies": 32
+  },
+  "bothHome5": {
+    "label": "양쪽 첫 수 자기 진영 배치",
+    "n": 108,
+    "w": 87,
+    "b": 16,
+    "king": 43,
+    "line": 60,
+    "repetition": 2,
+    "limit": 3,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 9,
+        "b": 2,
+        "unfinished": 1
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 8,
+        "b": 3,
+        "unfinished": 1
+      },
+      "line/material": {
+        "n": 12,
+        "w": 7,
+        "b": 3,
+        "unfinished": 2
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 11,
+        "b": 0,
+        "unfinished": 1
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.8446601941747572,
+    "finishRate": 0.9537037037037037,
+    "medianPlies": 33,
+    "medianFinishedPlies": 31
+  },
+  "homeDrops5": {
+    "label": "모든 배치는 자기 진영",
+    "n": 108,
+    "w": 69,
+    "b": 33,
+    "king": 18,
+    "line": 84,
+    "repetition": 6,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 7,
+        "b": 5,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 3,
+        "b": 9,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 9,
+        "b": 3,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 3,
+        "b": 9,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 8,
+        "b": 0,
+        "unfinished": 4
+      },
+      "material/material": {
+        "n": 12,
+        "w": 10,
+        "b": 0,
+        "unfinished": 2
+      }
+    },
+    "decisiveWhiteRate": 0.6764705882352942,
+    "finishRate": 0.9444444444444444,
+    "medianPlies": 27,
+    "medianFinishedPlies": 27
+  },
+  "kings4": {
+    "label": "킹 선배치 · 4목",
+    "n": 108,
+    "w": 93,
+    "b": 15,
+    "king": 41,
+    "line": 67,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 9,
+        "b": 3,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.8611111111111112,
+    "finishRate": 1,
+    "medianPlies": 13,
+    "medianFinishedPlies": 13
+  },
+  "whitePawnHome4": {
+    "label": "백 첫 수 자기 진영 폰 · 4목",
+    "n": 108,
+    "w": 93,
+    "b": 15,
+    "king": 37,
+    "line": 71,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 12,
+        "w": 8,
+        "b": 4,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 12,
+        "w": 12,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 12,
+        "w": 11,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 12,
+        "w": 10,
+        "b": 2,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.8611111111111112,
+    "finishRate": 1,
+    "medianPlies": 9,
+    "medianFinishedPlies": 9
+  }
+}

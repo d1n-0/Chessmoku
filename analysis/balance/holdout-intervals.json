@@ -1,0 +1,21 @@
+{
+  "method": "10,000 paired seed-cluster bootstrap samples, central 95%; conditional on the bots and settings, not human balance",
+  "intervals": {
+    "kings5": [
+      55.67,
+      62.14
+    ],
+    "bothHome5": [
+      58.1,
+      63.73
+    ],
+    "difference_pp": [
+      -2.22,
+      6.47
+    ],
+    "absolute_bias_change_pp": [
+      -2.22,
+      6.47
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "engineVersion": 2,
+  "created": "2026-10-16T13:27:17.884Z",
+  "variants": {
+    "kings5": {
+      "label": "킹 선배치 · 자유 첫 수",
+      "k": 5
+    },
+    "bothHome5": {
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "k": 5,
+      "opening": "both-home"
+    }
+  },
+  "profiles": {
+    "line": {
+      "line": 1.6,
+      "material": 2,
+      "activity": 0.7,
+      "noise": 5
+    },
+    "balanced": {
+      "line": 1,
+      "material": 5,
+      "activity": 1,
+      "noise": 5
+    },
+    "material": {
+      "line": 0.55,
+      "material": 11,
+      "activity": 1.2,
+      "noise": 5
+    }
+  },
+  "seeds": 24,
+  "seedStart": 101,
+  "depth": 4,
+  "workers": 14,
+  "jobs": 432,
+  "width": 8,
+  "maxPly": 120,
+  "note": "No live rules modified. Repetition/limit are laboratory stops, not production draws. Full played-transition validation against production engine. Own-candidate beam and static frontier limit strength."
+}

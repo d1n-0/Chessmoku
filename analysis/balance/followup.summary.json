@@ -1,0 +1,215 @@
+{
+  "blackPawnE6": {
+    "label": "흑 폰 e6 선배치",
+    "n": 216,
+    "w": 146,
+    "b": 70,
+    "king": 157,
+    "line": 59,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 18,
+        "b": 6,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 9,
+        "b": 15,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 24,
+        "w": 1,
+        "b": 23,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 22,
+        "b": 2,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 18,
+        "b": 6,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 13,
+        "b": 11,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 24,
+        "w": 22,
+        "b": 2,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 23,
+        "b": 1,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 20,
+        "b": 4,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.6759259259259259,
+    "finishRate": 1,
+    "medianPlies": 27.5,
+    "medianFinishedPlies": 27.5
+  },
+  "blackPawnD7": {
+    "label": "흑 폰 d7 선배치",
+    "n": 216,
+    "w": 162,
+    "b": 54,
+    "king": 140,
+    "line": 76,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 15,
+        "b": 9,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 6,
+        "b": 18,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 24,
+        "w": 10,
+        "b": 14,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 23,
+        "b": 1,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 21,
+        "b": 3,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 19,
+        "b": 5,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 20,
+        "b": 4,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.75,
+    "finishRate": 1,
+    "medianPlies": 17,
+    "medianFinishedPlies": 17
+  },
+  "whitePawnRank2": {
+    "label": "백 첫 수 2행 폰 배치",
+    "n": 216,
+    "w": 62,
+    "b": 154,
+    "king": 118,
+    "line": 98,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 13,
+        "b": 11,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 5,
+        "b": 19,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 24,
+        "w": 0,
+        "b": 24,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 15,
+        "b": 9,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 12,
+        "b": 12,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 3,
+        "b": 21,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 24,
+        "w": 9,
+        "b": 15,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 3,
+        "b": 21,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 2,
+        "b": 22,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.28703703703703703,
+    "finishRate": 1,
+    "medianPlies": 22.5,
+    "medianFinishedPlies": 22.5
+  }
+}

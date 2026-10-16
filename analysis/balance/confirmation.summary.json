@@ -1,0 +1,215 @@
+{
+  "kings5": {
+    "label": "킹 선배치 · 자유 첫 수",
+    "n": 72,
+    "w": 41,
+    "b": 28,
+    "king": 41,
+    "line": 28,
+    "repetition": 2,
+    "limit": 1,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 8,
+        "w": 2,
+        "b": 6,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 8,
+        "w": 1,
+        "b": 6,
+        "unfinished": 1
+      },
+      "line/material": {
+        "n": 8,
+        "w": 0,
+        "b": 8,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 8,
+        "w": 7,
+        "b": 1,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 8,
+        "w": 7,
+        "b": 0,
+        "unfinished": 1
+      },
+      "balanced/material": {
+        "n": 8,
+        "w": 1,
+        "b": 7,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 8,
+        "w": 7,
+        "b": 0,
+        "unfinished": 1
+      }
+    },
+    "decisiveWhiteRate": 0.5942028985507246,
+    "finishRate": 0.9583333333333334,
+    "medianPlies": 25,
+    "medianFinishedPlies": 25
+  },
+  "whitePawnHome5": {
+    "label": "백 첫 수 자기 진영 폰",
+    "n": 72,
+    "w": 52,
+    "b": 20,
+    "king": 64,
+    "line": 8,
+    "repetition": 0,
+    "limit": 0,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 8,
+        "w": 1,
+        "b": 7,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 8,
+        "w": 1,
+        "b": 7,
+        "unfinished": 0
+      },
+      "material/line": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 8,
+        "w": 2,
+        "b": 6,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.7222222222222222,
+    "finishRate": 1,
+    "medianPlies": 10,
+    "medianFinishedPlies": 10
+  },
+  "bothHome5": {
+    "label": "양쪽 첫 수 자기 진영 배치",
+    "n": 72,
+    "w": 46,
+    "b": 24,
+    "king": 43,
+    "line": 27,
+    "repetition": 1,
+    "limit": 1,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 8,
+        "w": 4,
+        "b": 4,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 8,
+        "w": 2,
+        "b": 6,
+        "unfinished": 0
+      },
+      "line/material": {
+        "n": 8,
+        "w": 0,
+        "b": 8,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 8,
+        "w": 7,
+        "b": 1,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "balanced/material": {
+        "n": 8,
+        "w": 2,
+        "b": 4,
+        "unfinished": 2
+      },
+      "material/line": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 8,
+        "w": 8,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 8,
+        "w": 7,
+        "b": 1,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.6571428571428571,
+    "finishRate": 0.9722222222222222,
+    "medianPlies": 25,
+    "medianFinishedPlies": 25
+  }
+}

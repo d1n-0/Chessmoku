@@ -1,0 +1,144 @@
+{
+  "kings5": {
+    "label": "킹 선배치 · 자유 첫 수",
+    "n": 216,
+    "w": 121,
+    "b": 85,
+    "king": 150,
+    "line": 56,
+    "repetition": 8,
+    "limit": 2,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 2,
+        "b": 22,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 6,
+        "b": 17,
+        "unfinished": 1
+      },
+      "line/material": {
+        "n": 24,
+        "w": 2,
+        "b": 22,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 20,
+        "b": 1,
+        "unfinished": 3
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 16,
+        "b": 5,
+        "unfinished": 3
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 4,
+        "b": 17,
+        "unfinished": 3
+      },
+      "material/line": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 23,
+        "b": 1,
+        "unfinished": 0
+      }
+    },
+    "decisiveWhiteRate": 0.587378640776699,
+    "finishRate": 0.9537037037037037,
+    "medianPlies": 23,
+    "medianFinishedPlies": 23
+  },
+  "bothHome5": {
+    "label": "양쪽 첫 수 자기 진영 배치",
+    "n": 216,
+    "w": 127,
+    "b": 81,
+    "king": 138,
+    "line": 70,
+    "repetition": 5,
+    "limit": 3,
+    "no-action": 0,
+    "byMatch": {
+      "line/line": {
+        "n": 24,
+        "w": 8,
+        "b": 16,
+        "unfinished": 0
+      },
+      "line/balanced": {
+        "n": 24,
+        "w": 9,
+        "b": 11,
+        "unfinished": 4
+      },
+      "line/material": {
+        "n": 24,
+        "w": 0,
+        "b": 24,
+        "unfinished": 0
+      },
+      "balanced/line": {
+        "n": 24,
+        "w": 23,
+        "b": 1,
+        "unfinished": 0
+      },
+      "balanced/balanced": {
+        "n": 24,
+        "w": 17,
+        "b": 6,
+        "unfinished": 1
+      },
+      "balanced/material": {
+        "n": 24,
+        "w": 0,
+        "b": 23,
+        "unfinished": 1
+      },
+      "material/line": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/balanced": {
+        "n": 24,
+        "w": 24,
+        "b": 0,
+        "unfinished": 0
+      },
+      "material/material": {
+        "n": 24,
+        "w": 22,
+        "b": 0,
+        "unfinished": 2
+      }
+    },
+    "decisiveWhiteRate": 0.6105769230769231,
+    "finishRate": 0.9629629629629629,
+    "medianPlies": 23,
+    "medianFinishedPlies": 23
+  }
+}

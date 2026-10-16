@@ -1,0 +1,101 @@
+{
+  "engineVersion": 2,
+  "created": "2026-10-16T13:22:32.192Z",
+  "variants": {
+    "blackFirstControl": {
+      "label": "대조군: 킹 선배치 · 흑 선공",
+      "k": 5,
+      "first": "b"
+    },
+    "whiteKingFirst5": {
+      "label": "백 첫 수 킹 이동만",
+      "k": 5,
+      "opening": "white-king"
+    },
+    "blackCenterPawn5": {
+      "label": "흑 폰 e5 선배치",
+      "k": 5,
+      "extra": "b",
+      "pawnSquare": 28
+    },
+    "blackTwoPawns5": {
+      "label": "흑 폰 d7·f7 선배치",
+      "k": 5,
+      "extra": "b",
+      "pawnSquares": [
+        11,
+        13
+      ]
+    },
+    "kings5": {
+      "label": "킹 선배치 · 자유 첫 수",
+      "k": 5
+    },
+    "whitePawnHome5": {
+      "label": "백 첫 수 자기 진영 폰",
+      "k": 5,
+      "opening": "white-pawn-home"
+    },
+    "whiteHome5": {
+      "label": "백 첫 수 자기 진영 기물",
+      "k": 5,
+      "opening": "white-home"
+    },
+    "blackPawn5": {
+      "label": "흑 폰 e7 선배치",
+      "k": 5,
+      "extra": "b"
+    },
+    "fixedWhite5": {
+      "label": "백 폰 e2 고정 후 흑 차례",
+      "k": 5,
+      "extra": "w"
+    },
+    "bothHome5": {
+      "label": "양쪽 첫 수 자기 진영 배치",
+      "k": 5,
+      "opening": "both-home"
+    },
+    "homeDrops5": {
+      "label": "모든 배치는 자기 진영",
+      "k": 5,
+      "opening": "all-home"
+    },
+    "kings4": {
+      "label": "킹 선배치 · 4목",
+      "k": 4
+    },
+    "whitePawnHome4": {
+      "label": "백 첫 수 자기 진영 폰 · 4목",
+      "k": 4,
+      "opening": "white-pawn-home"
+    }
+  },
+  "profiles": {
+    "line": {
+      "line": 1.6,
+      "material": 2,
+      "activity": 0.7,
+      "noise": 5
+    },
+    "balanced": {
+      "line": 1,
+      "material": 5,
+      "activity": 1,
+      "noise": 5
+    },
+    "material": {
+      "line": 0.55,
+      "material": 11,
+      "activity": 1.2,
+      "noise": 5
+    }
+  },
+  "seeds": 12,
+  "depth": 1,
+  "workers": 6,
+  "jobs": 1404,
+  "width": 6,
+  "maxPly": 120,
+  "note": "No live rules modified. Repetition/limit are laboratory stops, not production draws. Full played-transition validation against production engine. Own-candidate beam and static frontier limit strength."
+}

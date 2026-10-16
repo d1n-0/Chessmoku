@@ -1,0 +1,50 @@
+{
+  "engineVersion": 2,
+  "created": "2026-10-16T13:23:45.078Z",
+  "variants": {
+    "blackPawnE6": {
+      "label": "흑 폰 e6 선배치",
+      "k": 5,
+      "extra": "b",
+      "pawnSquare": 20
+    },
+    "blackPawnD7": {
+      "label": "흑 폰 d7 선배치",
+      "k": 5,
+      "extra": "b",
+      "pawnSquare": 11
+    },
+    "whitePawnRank2": {
+      "label": "백 첫 수 2행 폰 배치",
+      "k": 5,
+      "opening": "white-pawn-rank2"
+    }
+  },
+  "profiles": {
+    "line": {
+      "line": 1.6,
+      "material": 2,
+      "activity": 0.7,
+      "noise": 5
+    },
+    "balanced": {
+      "line": 1,
+      "material": 5,
+      "activity": 1,
+      "noise": 5
+    },
+    "material": {
+      "line": 0.55,
+      "material": 11,
+      "activity": 1.2,
+      "noise": 5
+    }
+  },
+  "seeds": 24,
+  "depth": 2,
+  "workers": 4,
+  "jobs": 648,
+  "width": 12,
+  "maxPly": 120,
+  "note": "No live rules modified. Repetition/limit are laboratory stops, not production draws. Full played-transition validation against production engine. Own-candidate beam and static frontier limit strength."
+}
