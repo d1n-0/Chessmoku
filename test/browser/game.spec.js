@@ -471,6 +471,15 @@ test("host configures clocks, assigns a player, waits for readiness and stops a 
     await expect(a.locator("#status-title")).toHaveText("대국 준비");
     await expect(a.locator("#reserves button:enabled")).toHaveCount(0);
     await expect(b.locator("#host-controls")).toBeHidden();
+    for (const page of [a, b, c]) {
+      await expect(page.locator("#room-setup")).toBeVisible();
+      await expect(page.locator(".board-frame")).toHaveCSS(
+        "filter",
+        "blur(5px)",
+      );
+    }
+    await expect(b.locator("#total-minutes")).toBeDisabled();
+    await expect(c.locator("#save-settings")).toBeHidden();
     await a.locator("#host-controls summary").click();
     await a.locator("#total-minutes").fill("3");
     await a.locator("#increment-seconds").fill("2");
@@ -479,6 +488,9 @@ test("host configures clocks, assigns a player, waits for readiness and stops a 
     await expect(b.locator("#time-settings-summary")).toContainText(
       "총 3:00 · +2초 · 수당 30초",
     );
+    await expect(b.locator("#total-minutes")).toHaveValue("3");
+    await expect(c.locator("#increment-seconds")).toHaveValue("2");
+    await a.screenshot({ path: "test-results/room-setup-desktop.png" });
     await a.locator("#assign-color").selectOption("b");
     await a.locator("#assign-submit").click();
     await expect(c.locator("#connection")).toContainText("나는 흑");
@@ -489,6 +501,9 @@ test("host configures clocks, assigns a player, waits for readiness and stops a 
     await c.locator("#ready-game").click();
     await expect(a.locator("#status-title")).toHaveText("백 차례");
     await expect(a.locator("#game-clock")).toBeVisible();
+    for (const page of [a, b, c])
+      await expect(page.locator("#room-setup")).toBeHidden();
+    await expect(a.locator(".board-frame")).toHaveCSS("filter", "none");
     await place(a, "백 폰", 48);
     await expect(c.locator("#move-count")).toHaveText("1수");
     await a.screenshot({ path: "test-results/timed-room.png" });
@@ -520,6 +535,7 @@ test("host configures clocks, assigns a player, waits for readiness and stops a 
     await expect(b.locator("#ready-game")).toHaveText("준비");
     await a.setViewportSize({ width: 390, height: 844 });
     await a.locator("#open-mode").click();
+    await a.locator("#close-panel").click();
     await expect(a.locator("#save-settings")).toBeVisible();
     expect(
       await a.evaluate(

@@ -485,3 +485,46 @@ input {
     margin-bottom: 0;
   }
 }
+
+.arena {
+  position: relative;
+}
+.preparing .board-frame {
+  filter: blur(5px);
+  pointer-events: none;
+}
+.arena .room-setup {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(360px, calc(100% - 16px));
+  max-height: calc(100% - 80px);
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 0 0 8px var(--backdrop);
+}
+.room-setup h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+#room-settings {
+  display: grid;
+  gap: 12px;
+}
+#room-settings label {
+  display: grid;
+  gap: 4px;
+}
+#room-settings input {
+  width: 100%;
+  min-width: 0;
+}
+#room-settings input:disabled {
+  color: var(--text);
+  opacity: 1;
+}
+#setup-ready-status {
+  margin: 12px 0;
+}

@@ -39,6 +39,10 @@ export function renderLobby({ room, connected, pending }) {
     !room ||
     (!room.settings.totalSeconds && !room.settings.turnSeconds) ||
     room.phase === "waiting";
+  const preparing = room?.phase === "waiting";
+  $("room-setup").hidden = !preparing;
+  $("board").inert = !!preparing;
+  document.querySelector(".arena").classList.toggle("preparing", !!preparing);
   if (!room) return;
   renderClock();
   const waiting = room.phase === "waiting";
@@ -56,7 +60,14 @@ export function renderLobby({ room, connected, pending }) {
   for (const id of ["stop-game", "prepare-game"])
     $(id).disabled = !connected || pending;
   for (const element of $("room-settings").elements)
-    element.disabled = !editable;
+    element.disabled = !editable || !room.isHost;
+  $("save-settings").hidden = !room.isHost;
+  $("setup-ready-status").textContent = ["w", "b"]
+    .map(
+      (color) =>
+        `${color === "w" ? "백" : "흑"} · ${!room.players[color] ? "입장 대기" : room.ready.includes(color) ? "준비 완료" : "준비 대기"}`,
+    )
+    .join(" / ");
   for (const element of $("assign-form").elements) element.disabled = !editable;
   const key = JSON.stringify([room.code, room.settings]);
   if (key !== lastSettings) {
