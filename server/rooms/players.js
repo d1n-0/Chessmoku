@@ -10,12 +10,14 @@ export function playerName(value) {
 }
 
 // Swap sessions atomically: credentials follow people, not board colors.
-function swapColors(room) {
+export function swapPlayerSeats(room) {
   [room.tokens.w, room.tokens.b] = [room.tokens.b, room.tokens.w];
   [room.sockets.w, room.sockets.b] = [room.sockets.b, room.sockets.w];
-  for (const color of ["w", "b"]) {
+  for (const color of ["w", "b"])
     if (room.sockets[color]) room.sockets[color].color = color;
-  }
+}
+function swapColors(room) {
+  swapPlayerSeats(room);
   room.colorRequest = null;
   room.undoRequest = null;
   room.rematch = [];

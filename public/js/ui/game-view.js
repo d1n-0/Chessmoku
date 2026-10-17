@@ -1,4 +1,4 @@
-import { colorName, other } from "/shared/game.js";
+import { colorName, other, canSwap } from "/shared/game.js";
 import { $ } from "./dom.js";
 import { renderBoard } from "./board.js";
 import { renderReserves } from "./reserves.js";
@@ -58,6 +58,9 @@ export function createGameView() {
       connected: mode === "local" || connected,
       pending,
     });
+    $("swap-sides").hidden =
+      !game.rules?.swapPlies || (mode === "online" && !room?.color);
+    $("swap-sides").disabled = !canAct || !canSwap(game);
     $("local-settings").disabled = !!game.ply || !!game.result;
     $("play-again").hidden =
       mode === "online" && (!room?.color || !room.joined);
@@ -83,6 +86,8 @@ export function createGameView() {
     } else if (mode === "online" && game.turn !== room.color) {
       title = `${colorName(game.turn)} 차례 · 상대`;
     }
+    if (mode === "local" && game.rules?.swapPlies)
+      title += ` · ${game.seats[game.turn]}P`;
     if (game.result) {
       title = game.result.winner
         ? `${colorName(game.result.winner)} 승리!`

@@ -12,7 +12,12 @@ import { randomBytes, randomInt } from "node:crypto";
 import { newGame, applyAction, other } from "../../shared/game.js";
 
 import { handleUndo } from "./undo.js";
-import { playerName, handleColorRequest, yieldSeat } from "./players.js";
+import {
+  playerName,
+  handleColorRequest,
+  yieldSeat,
+  swapPlayerSeats,
+} from "./players.js";
 
 export function createRoomService({
   rooms,
@@ -175,8 +180,18 @@ export function createRoomService({
         return;
       }
       chargeClock(room, color, now);
-      if (room.clock.remaining[color] !== null)
+      if (
+        message.action.kind !== "swap" &&
+        room.clock.remaining[color] !== null
+      )
         room.clock.remaining[color] += room.settings.incrementSeconds * 1000;
+      if (message.action.kind === "swap") {
+        swapPlayerSeats(room);
+        [room.clock.remaining.w, room.clock.remaining.b] = [
+          room.clock.remaining.b,
+          room.clock.remaining.w,
+        ];
+      }
       room.game = next;
       room.clock.turnStarted = now;
       if (room.game.result) finishRoom(room);

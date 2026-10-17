@@ -4,6 +4,9 @@ import { $, asset } from "./dom.js";
 export function renderHistory({ game }) {
   const el = $("history");
   el.replaceChildren();
+  const headers = document.querySelectorAll(".history-head span");
+  headers[1].textContent = game.rules?.swapPlies ? "홀수 수" : "백";
+  headers[2].textContent = game.rules?.swapPlies ? "짝수 수" : "흑";
   $("move-count").textContent = `${game.ply}수`;
   if (!game.history.length) {
     el.innerHTML = '<div class="empty-history">—</div>';
@@ -18,7 +21,10 @@ export function renderHistory({ game }) {
     for (const m of [game.history[i], game.history[i + 1]]) {
       const span = document.createElement("span");
       span.className = "move";
-      if (m) {
+      if (m?.kind === "swap") {
+        span.textContent = `${m.color === "w" ? "백" : "흑"} 교환`;
+        span.title = "흑백 교환 · 차례 소모";
+      } else if (m) {
         span.innerHTML = `<img src="${asset(m.color, m.type)}" alt="${NAMES[m.type]}"> ${m.kind === "place" ? "＋" : squareName(m.from) + (m.captured ? "×" : "→")}${squareName(m.to)}`;
         span.title =
           m.kind === "place"

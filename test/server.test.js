@@ -695,3 +695,106 @@ test("server awards timeout without an incoming action, including disconnected p
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("custom rules persist and action swaps transfer people and clocks, with consensual undo", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-rules-"));
+  let app = await launch(dir);
+  const sockets = [];
+  const connect = async () => {
+    const ws = await client(app.url);
+    sockets.push(ws);
+    return ws;
+  };
+  try {
+    const a = await connect(),
+      b = await connect();
+    a.sendJSON({ type: "create" });
+    const sa = await a.next((m) => m.type === "session");
+    b.sendJSON({ type: "join", code: sa.code });
+    const sb = await b.next((m) => m.type === "session");
+    const settings = {
+      totalSeconds: 60,
+      turnSeconds: 0,
+      incrementSeconds: 2,
+      rules: { whiteKing: 63, blackKing: 7, noDropCheck: true, swapPlies: 4 },
+    };
+    a.sendJSON({
+      type: "settings",
+      settings: { ...settings, rules: { whiteKing: 0, blackKing: 0 } },
+    });
+    await a.next((m) => m.type === "error");
+    a.sendJSON({ type: "settings", settings });
+    const configured = await b.next(
+      (m) => m.type === "state" && m.game.rulesVersion === 3,
+    );
+    assert.equal(configured.game.board[63].type, "k");
+    assert.equal(configured.settings.rules.noDropCheck, true);
+    await ready(a, b);
+    a.sendJSON({
+      type: "action",
+      version: configured.version,
+      action: { kind: "place", type: "r", to: 0 },
+    });
+    assert.match((await a.next((m) => m.type === "error")).message, /규칙/);
+    a.sendJSON({
+      type: "action",
+      version: configured.version,
+      action: { kind: "place", type: "p", to: 48 },
+    });
+    const placed = await b.next((m) => m.type === "state" && m.game.ply === 1);
+    b.sendJSON({
+      type: "action",
+      version: placed.version,
+      action: { kind: "swap" },
+    });
+    const swapped = await a.next((m) => m.type === "state" && m.game.ply === 2);
+    assert.equal(swapped.color, "b");
+    assert.equal(swapped.game.turn, "b");
+    assert.equal(swapped.isHost, true);
+    assert.ok(swapped.clock.remaining.w <= 60000);
+    assert.equal(swapped.clock.remaining.b, placed.clock.remaining.w);
+    assert.equal(app.rooms.get(sa.code).tokens.w, sb.token);
+    b.sendJSON({
+      type: "action",
+      version: swapped.version,
+      action: { kind: "place", type: "p", to: 16 },
+    });
+    assert.match((await b.next((m) => m.type === "error")).message, /차례/);
+    b.sendJSON({ type: "undo-request", version: swapped.version });
+    const request = await a.next((m) => m.type === "state" && m.undoRequest);
+    a.sendJSON({
+      type: "undo-response",
+      id: request.undoRequest.id,
+      accept: true,
+    });
+    const undone = await a.next(
+      (m) => m.type === "state" && m.version === swapped.version + 1,
+    );
+    assert.equal(undone.color, "w");
+    assert.equal(undone.game.ply, 1);
+    assert.equal(undone.game.turn, "b");
+    assert.equal(undone.game.rules.whiteKing, 63);
+    b.sendJSON({
+      type: "action",
+      version: undone.version,
+      action: { kind: "swap" },
+    });
+    await a.next(
+      (m) =>
+        m.type === "state" && m.game.ply === 2 && m.version > undone.version,
+    );
+    await app.stop();
+    app = await launch(dir);
+    const ar = await connect();
+    ar.sendJSON({ type: "resume", code: sa.code, token: sa.token });
+    const restored = await ar.next((m) => m.type === "state");
+    assert.equal(restored.color, "b");
+    assert.equal(restored.game.ply, 2);
+    assert.equal(restored.settings.rules.swapPlies, 4);
+    assert.equal(restored.game.seats.b, 1);
+  } finally {
+    sockets.forEach((s) => s.terminate());
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

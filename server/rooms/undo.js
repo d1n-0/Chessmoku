@@ -1,3 +1,4 @@
+import { swapPlayerSeats } from "./players.js";
 import { chargeClock } from "./lifecycle.js";
 import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
@@ -34,8 +35,16 @@ export function handleUndo(room, color, message) {
       throw new Error("상대가 연결될 때까지 기다려 주세요.");
     const now = Date.now();
     chargeClock(room, room.game.turn, now);
-    const mover = room.game.history.at(-1).color;
-    if (room.clock.remaining[mover] !== null)
+    const move = room.game.history.at(-1);
+    const mover = move.color;
+    if (move.kind === "swap") {
+      swapPlayerSeats(room);
+      [room.clock.remaining.w, room.clock.remaining.b] = [
+        room.clock.remaining.b,
+        room.clock.remaining.w,
+      ];
+    }
+    if (move.kind !== "swap" && room.clock.remaining[mover] !== null)
       room.clock.remaining[mover] = Math.max(
         0,
         room.clock.remaining[mover] - room.settings.incrementSeconds * 1000,
@@ -43,6 +52,7 @@ export function handleUndo(room, color, message) {
     room.clock.turnStarted = now;
     room.game = replayLocalGame({
       rulesVersion: room.game.rulesVersion,
+      rules: room.game.rules,
       history: room.game.history.slice(0, -1),
     }).game;
     room.version++;

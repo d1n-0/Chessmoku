@@ -1,3 +1,9 @@
+import {
+  initializeRuleFields,
+  writeRuleFields,
+  readRuleFields,
+  refreshRuleFields,
+} from "./rule-settings.js";
 import { $ } from "./dom.js";
 import { confirmAction } from "./dialogs.js";
 
@@ -48,7 +54,7 @@ export function renderLobby({ room, connected, pending }) {
   const waiting = room.phase === "waiting";
   const editable = waiting && !room.ready.length && connected && !pending;
   $("ready-game").hidden = !room.color || !waiting;
-  $("setup-title").textContent = room.isLocal ? "시간 설정" : "방 설정";
+  $("setup-title").textContent = room.isLocal ? "대국 설정" : "방 설정";
   $("ready-game").textContent = room.isLocal
     ? "대국 시작"
     : room.ready.includes(room.color)
@@ -79,7 +85,9 @@ export function renderLobby({ room, connected, pending }) {
     $("turn-seconds").value = room.settings.turnSeconds;
     $("total-minutes").value = room.settings.totalSeconds / 60;
     $("increment-seconds").value = room.settings.incrementSeconds;
+    writeRuleFields(room.settings.rules);
   }
+  refreshRuleFields(editable && room.isHost);
   const s = room.settings;
   $("time-settings-summary").textContent =
     `총 ${s.totalSeconds ? timeText(s.totalSeconds * 1000) : "무제한"} · +${s.incrementSeconds}초${s.turnSeconds ? ` · 수당 ${s.turnSeconds}초` : ""}`;
@@ -102,9 +110,12 @@ function readSettings() {
     turnSeconds: Number($("turn-seconds").value),
     totalSeconds: Math.round(Number($("total-minutes").value) * 60),
     incrementSeconds: Number($("increment-seconds").value),
+    rules: readRuleFields(),
   };
 }
 export function bindLobby({ send, getRoom }) {
+  initializeRuleFields();
+  $("rule-preset").onchange = () => refreshRuleFields(true);
   setInterval(renderClock, 100);
   $("ready-game").onclick = () => {
     if (!getRoom()) {

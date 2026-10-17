@@ -1,4 +1,4 @@
-import { applyAction, other } from "/shared/game.js";
+import { applyAction, other, newGame, validateRules } from "/shared/game.js";
 
 export const defaultTimeSettings = () => ({
   turnSeconds: 0,
@@ -20,11 +20,18 @@ export function validateTimeSettings(settings) {
   }
   if (!settings.totalSeconds && settings.incrementSeconds)
     throw new Error("추가 시간은 총 시간을 설정해야 사용할 수 있습니다.");
-  return { ...settings };
+  return {
+    ...settings,
+    ...(settings.rules === undefined
+      ? {}
+      : { rules: validateRules(settings.rules) }),
+  };
 }
 export function setupLocalClock(game, settings = defaultTimeSettings()) {
   return {
-    ...game,
+    ...(settings.rules === undefined
+      ? game
+      : newGame({ rules: validateRules(settings.rules) })),
     localTiming: {
       settings: validateTimeSettings(settings),
       phase: "waiting",
@@ -79,7 +86,12 @@ export function localAction(game, action, now = Date.now()) {
   if (next.localTiming) {
     const t = next.localTiming;
     charge(t, game.turn, now);
-    if (t.clock.remaining[game.turn] !== null)
+    if (action.kind === "swap")
+      [t.clock.remaining.w, t.clock.remaining.b] = [
+        t.clock.remaining.b,
+        t.clock.remaining.w,
+      ];
+    if (action.kind !== "swap" && t.clock.remaining[game.turn] !== null)
       t.clock.remaining[game.turn] += t.settings.incrementSeconds * 1000;
     t.clock.turnStarted = now;
     if (next.result) {
@@ -93,8 +105,14 @@ export function undoLocalClock(current, previous, now = Date.now()) {
   if (!current.localTiming) return previous;
   const timing = structuredClone(current.localTiming);
   charge(timing, current.turn, now);
-  const mover = current.history.at(-1).color;
-  if (timing.clock.remaining[mover] !== null)
+  const move = current.history.at(-1);
+  const mover = move.color;
+  if (move.kind === "swap")
+    [timing.clock.remaining.w, timing.clock.remaining.b] = [
+      timing.clock.remaining.b,
+      timing.clock.remaining.w,
+    ];
+  if (move.kind !== "swap" && timing.clock.remaining[mover] !== null)
     timing.clock.remaining[mover] = Math.max(
       0,
       timing.clock.remaining[mover] - timing.settings.incrementSeconds * 1000,

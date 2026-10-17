@@ -1,6 +1,6 @@
 import { WebSocket } from "ws";
 import { randomUUID } from "node:crypto";
-import { newGame, other } from "../../shared/game.js";
+import { newGame, other, validateRules } from "../../shared/game.js";
 
 export const defaultSettings = () => ({
   turnSeconds: 0,
@@ -36,7 +36,7 @@ export function removePlayer(room, token) {
   if (room.hostToken === token) room.hostToken = room.order[0] || null;
 }
 export function waitingRoom(room) {
-  room.game = newGame();
+  room.game = newGame({ rules: room.settings.rules });
   room.phase = "waiting";
   room.ready = [];
   room.rematch = [];
@@ -141,9 +141,16 @@ export function handleLobby(room, socket, message, { attach }) {
     }
     if (!settings.totalSeconds && settings.incrementSeconds)
       throw new Error("추가 시간은 총 시간을 설정해야 사용할 수 있습니다.");
+    const rules =
+      settings.rules === undefined
+        ? room.settings.rules
+        : validateRules(settings.rules);
     room.settings = Object.fromEntries(
       Object.keys(defaultSettings()).map((key) => [key, settings[key]]),
     );
+    if (rules !== undefined) room.settings.rules = rules;
+    room.game = newGame({ rules });
+    room.colorRequest = null;
     room.version++;
     return;
   }

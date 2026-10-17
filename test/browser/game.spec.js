@@ -594,3 +594,102 @@ test("offline clocks configure above the board, increment, undo, reload and time
   await expect(page.locator("#result-title")).toHaveText("흑 승리!");
   expect((await saved()).ply).toBe(0);
 });
+
+test("offline balance rules enforce king-first, recent-drop movement and action swaps after reload", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator("#local-settings").click();
+  await page.locator("#rule-options summary").click();
+  await page.locator("#rule-preset").uncheck();
+  await page.locator("#rule-king-first").check();
+  await page.locator("#rule-recent-move").check();
+  await page.locator("#rule-drop-check").check();
+  await page.locator("#rule-swap").fill("4");
+  await page.locator("#ready-game").click();
+  await expect(page.locator("#board img")).toHaveCount(0);
+  await page.getByRole("button", { name: /백 폰 배치/ }).click();
+  await expect(page.locator(".square.target")).toHaveCount(0);
+  await expect(page.locator("#swap-sides")).toBeDisabled();
+  await place(page, "백 킹", 60);
+  await place(page, "흑 킹", 4);
+  await page.locator('[data-square="60"]').click();
+  await expect(page.locator(".square.target")).toHaveCount(0);
+  await page.locator("#swap-sides").click();
+  await page.locator("#confirm-ok").click();
+  await expect(page.locator("#status-title")).toHaveText("백 차례 · 2P");
+  await expect(page.locator("#move-count")).toHaveText("3수");
+  await expect(page.locator("#history")).toContainText("백 교환");
+  await page.reload();
+  await expect(page.locator("#status-title")).toHaveText("백 차례 · 2P");
+  await page.locator("#undo").click();
+  await expect(page.locator("#status-title")).toHaveText("백 차례 · 1P");
+  await expect(page.locator("#move-count")).toHaveText("2수");
+  await page.locator('[data-square="60"]').click();
+  await expect(page.locator(".square.target")).toHaveCount(0);
+});
+
+test("all room members see balance options and swaps preserve the next player's authority", async ({
+  browser,
+}) => {
+  const contexts = await Promise.all([0, 1, 2].map(() => browser.newContext()));
+  const [a, b, c] = await Promise.all(
+    contexts.map((context) => context.newPage()),
+  );
+  try {
+    for (const page of [a, b, c]) {
+      await page.goto("/");
+      await page.locator("#online-mode").click();
+    }
+    await a.locator("#create-room").click();
+    await expect(a.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+    const code = await a.locator("#copy-code").textContent();
+    for (const page of [b, c]) {
+      await page.locator("#room-input").fill(code);
+      await page.locator("#join-form button").click();
+      await expect(page.locator("#copy-code")).toHaveText(code);
+    }
+    await a.locator("#rule-options summary").click();
+    await a.locator("#rule-white-king").selectOption("63");
+    await a.locator("#rule-black-king").selectOption("7");
+    await a.locator("#rule-drop-check").check();
+    await a.locator("#rule-no-check").fill("2");
+    await a.locator("#rule-swap").fill("4");
+    await a.locator("#save-settings").click();
+    for (const page of [b, c]) {
+      await page.locator("#rule-options summary").click();
+      await expect(page.locator("#rule-drop-check")).toBeChecked();
+      await expect(page.locator("#rule-drop-check")).toBeDisabled();
+      await expect(page.locator("#rule-white-king")).toHaveValue("63");
+      await expect(page.locator("#rule-swap")).toHaveValue("4");
+    }
+    await a.screenshot({ path: "test-results/balance-options.png" });
+    await c.setViewportSize({ width: 360, height: 640 });
+    await c.screenshot({ path: "test-results/balance-options-mobile.png" });
+    expect(
+      await c.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await ready(a, b);
+    await expect(a.locator('[data-square="63"] img')).toHaveAttribute(
+      "src",
+      "/assets/wK.svg",
+    );
+    await a.getByRole("button", { name: /백 룩 배치/ }).click();
+    await expect(a.locator('[data-square="0"]')).not.toHaveClass(/target/);
+    await place(a, "백 폰", 48);
+    await b.locator("#swap-sides").click();
+    await b.locator("#confirm-ok").click();
+    await expect(a.locator("#connection")).toContainText("나는 흑");
+    await expect(b.locator("#connection")).toContainText("나는 백");
+    await expect(a.locator("#status-title")).toHaveText("흑 차례");
+    await expect(b.locator("#reserves button:enabled")).toHaveCount(0);
+    await a.reload();
+    await expect(a.locator("#connection")).toContainText("나는 흑");
+    await place(a, "흑 폰", 16);
+    await expect(b.locator("#move-count")).toHaveText("3수");
+  } finally {
+    await Promise.all(contexts.map((context) => context.close()));
+  }
+});

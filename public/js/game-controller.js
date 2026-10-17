@@ -8,7 +8,7 @@ import {
   localLobby,
 } from "./local-clock.js";
 import { downloadGame } from "./download.js";
-import { newGame, legalTargets, other } from "/shared/game.js";
+import { newGame, legalTargets, other, canSwap } from "/shared/game.js";
 import {
   loadLocalGame,
   saveLocalGame,
@@ -129,6 +129,32 @@ export function startGame() {
       render();
     }
   });
+  $("swap-sides").onclick = () => {
+    if (!canAct() || !canSwap(game)) return;
+    confirmAction(
+      "흑백을 교환할까요?",
+      "한 수를 소비하며 교환 후 상대가 둡니다. 추가 시간은 지급하지 않습니다.",
+      () => {
+        if (!canAct() || !canSwap(game)) return;
+        if (mode === "local") {
+          if (checkLocalTime()) return;
+          const next = localAction(game, { kind: "swap" });
+          if (next.ply > game.ply) undoStack.push(game);
+          game = next;
+          selection = null;
+          saveLocal();
+        } else {
+          pending = true;
+          send({
+            type: "action",
+            action: { kind: "swap" },
+            version: room.version,
+          });
+        }
+        render();
+      },
+    );
+  };
   $("flip-board").onclick = () => {
     flipped = !flipped;
     render();
