@@ -547,3 +547,50 @@ test("host configures clocks, assigns a player, waits for readiness and stops a 
     await Promise.all(contexts.map((context) => context.close()));
   }
 });
+
+test("offline clocks configure above the board, increment, undo, reload and time out", async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#local-settings").click();
+  await expect(page.locator("#room-setup")).toBeVisible();
+  await expect(page.locator(".board-frame")).toHaveCSS("filter", "blur(5px)");
+  await page.locator("#total-minutes").fill("1");
+  await page.locator("#increment-seconds").fill("2");
+  await page.locator("#ready-game").click();
+  await expect(page.locator("#room-setup")).toBeHidden();
+  await expect(page.locator("#game-clock")).toContainText("백 1:00");
+  await page.clock.fastForward(10000);
+  await place(page, "백 폰", 48);
+  const saved = () =>
+    page.evaluate(() => JSON.parse(localStorage.getItem("five-crown-local")));
+  let game = await saved();
+  expect(game.localTiming.clock.remaining.w).toBeLessThanOrEqual(52000);
+  expect(game.localTiming.clock.remaining.w).toBeGreaterThan(50000);
+  await page.clock.fastForward(5000);
+  await page.locator("#undo").click();
+  game = await saved();
+  expect(game.ply).toBe(0);
+  expect(game.localTiming.clock.remaining.w).toBeLessThanOrEqual(50000);
+  expect(game.localTiming.clock.remaining.b).toBeLessThanOrEqual(55000);
+  expect(game.localTiming.clock.remaining.b).toBeGreaterThan(53000);
+  const start = game.localTiming.clock.turnStarted;
+  await page.reload();
+  expect((await saved()).localTiming.clock.turnStarted).toBe(start);
+  await expect(page.locator("#room-setup")).toBeHidden();
+  await expect(page.locator("#game-clock")).toBeVisible();
+  await page.clock.fastForward(51000);
+  await expect(page.locator("#result-title")).toHaveText("흑 승리!");
+  await expect(page.locator("#result-detail")).toContainText("시간");
+  await page.reload();
+  await expect(page.locator("#result-title")).toHaveText("흑 승리!");
+  await page.locator("#play-again").click();
+  await expect(page.locator("#room-setup")).toBeVisible();
+  await expect(page.locator("#total-minutes")).toHaveValue("1");
+  await page.locator("#turn-seconds").fill("2");
+  await page.locator("#ready-game").click();
+  await page.clock.fastForward(2100);
+  await expect(page.locator("#result-title")).toHaveText("흑 승리!");
+  expect((await saved()).ply).toBe(0);
+});

@@ -1,4 +1,5 @@
 // Keep the original storage keys so renaming the app preserves games and room sessions.
+import { validateTimeSettings, expireLocalClock } from "./local-clock.js";
 import { newGame } from "/shared/game.js";
 import { replayLocalGame } from "/shared/game/replay.js";
 
@@ -20,7 +21,27 @@ export function loadLocalGame() {
   try {
     const saved = JSON.parse(storage.get("five-crown-local"));
     if (!saved) return { game: newGame(), undoStack: [] };
-    return replayLocalGame(saved);
+    const restored = replayLocalGame(saved);
+    if (saved.localTiming) {
+      const t = saved.localTiming;
+      validateTimeSettings(t.settings);
+      if (
+        !["waiting", "playing", "finished"].includes(t.phase) ||
+        !["w", "b"].every(
+          (c) =>
+            t.clock.remaining[c] === null ||
+            (Number.isFinite(t.clock.remaining[c]) &&
+              t.clock.remaining[c] >= 0),
+        ) ||
+        (t.phase === "playing" && !Number.isFinite(t.clock.turnStarted))
+      )
+        throw new Error("Invalid clock");
+      restored.game.localTiming = t;
+      if (saved.result?.reason === "timeout")
+        restored.game.result = saved.result;
+      restored.game = expireLocalClock(restored.game);
+    }
+    return restored;
   } catch {
     return { game: newGame(), undoStack: [] };
   }

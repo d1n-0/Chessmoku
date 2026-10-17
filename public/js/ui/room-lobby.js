@@ -48,11 +48,14 @@ export function renderLobby({ room, connected, pending }) {
   const waiting = room.phase === "waiting";
   const editable = waiting && !room.ready.length && connected && !pending;
   $("ready-game").hidden = !room.color || !waiting;
-  $("ready-game").textContent = room.ready.includes(room.color)
-    ? "준비 취소"
-    : "준비";
+  $("setup-title").textContent = room.isLocal ? "시간 설정" : "방 설정";
+  $("ready-game").textContent = room.isLocal
+    ? "대국 시작"
+    : room.ready.includes(room.color)
+      ? "준비 취소"
+      : "준비";
   $("ready-game").disabled = !connected || pending || !!room.colorRequest;
-  $("host-controls").hidden = !room.isHost;
+  $("host-controls").hidden = !room.isHost || room.isLocal;
   $("room-settings").hidden = !waiting;
   $("assign-form").hidden = !waiting;
   $("stop-game").hidden = room.phase !== "playing";
@@ -62,6 +65,7 @@ export function renderLobby({ room, connected, pending }) {
   for (const element of $("room-settings").elements)
     element.disabled = !editable || !room.isHost;
   $("save-settings").hidden = !room.isHost;
+  $("setup-ready-status").hidden = !!room.isLocal;
   $("setup-ready-status").textContent = ["w", "b"]
     .map(
       (color) =>
@@ -93,19 +97,31 @@ export function renderLobby({ room, connected, pending }) {
     $("assign-player").value = selected;
   $("assign-submit").disabled = !editable || !$("assign-player").options.length;
 }
+function readSettings() {
+  return {
+    turnSeconds: Number($("turn-seconds").value),
+    totalSeconds: Math.round(Number($("total-minutes").value) * 60),
+    incrementSeconds: Number($("increment-seconds").value),
+  };
+}
 export function bindLobby({ send, getRoom }) {
   setInterval(renderClock, 100);
-  $("ready-game").onclick = () =>
-    send({ type: "ready", ready: !getRoom().ready.includes(getRoom().color) });
+  $("ready-game").onclick = () => {
+    if (!getRoom()) {
+      if (!$("room-settings").reportValidity()) return;
+      if (!send({ type: "settings", settings: readSettings() })) return;
+      send({ type: "ready", ready: true });
+    } else
+      send({
+        type: "ready",
+        ready: !getRoom().ready.includes(getRoom().color),
+      });
+  };
   $("room-settings").onsubmit = (event) => {
     event.preventDefault();
     send({
       type: "settings",
-      settings: {
-        turnSeconds: Number($("turn-seconds").value),
-        totalSeconds: Math.round(Number($("total-minutes").value) * 60),
-        incrementSeconds: Number($("increment-seconds").value),
-      },
+      settings: readSettings(),
     });
   };
   $("assign-form").onsubmit = (event) => {

@@ -31,6 +31,7 @@ export function createGameView() {
     selection,
     flipped,
     undoStack,
+    localLobby,
     canAct,
   }) {
     $("local-mode").classList.toggle("active", mode === "local");
@@ -51,7 +52,13 @@ export function createGameView() {
               ? "상대 재접속 대기"
               : `연결됨 · 나는 ${colorName(room.color)}`;
     }
-    renderRoom({ room, connected, pending });
+    renderRoom({
+      room,
+      lobby: mode === "local" ? localLobby : room,
+      connected: mode === "local" || connected,
+      pending,
+    });
+    $("local-settings").disabled = !!game.ply || !!game.result;
     $("play-again").hidden =
       mode === "online" && (!room?.color || !room.joined);
     $("create-room").disabled = pending;
@@ -88,7 +95,8 @@ export function createGameView() {
     if (room?.colorRequest && !game.result) {
       detail = "색상 변경 요청 · 대국 메뉴에서 확인";
     }
-    if (room?.phase === "waiting") title = "대국 준비";
+    if (localLobby?.phase === "waiting" || room?.phase === "waiting")
+      title = "대국 준비";
     if (room?.undoRequest) title = "무르기 요청 중";
     $("status-title").textContent = title;
     $("status-detail").textContent = detail;
@@ -123,6 +131,7 @@ export function createGameView() {
     $("reject-undo").disabled = !connected || pending;
     $("resign").disabled =
       !!game.result ||
+      localLobby?.phase === "waiting" ||
       (mode === "online" &&
         (!room?.color ||
           !room?.joined ||

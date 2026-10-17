@@ -3,10 +3,10 @@ import { $ } from "./dom.js";
 import { renderLobby, bindLobby } from "./room-lobby.js";
 import { confirmAction } from "./dialogs.js";
 
-export function renderRoom({ room, connected, pending }) {
+export function renderRoom({ room, lobby = room, connected, pending }) {
   $("save-name").hidden = !room;
   $("save-name").disabled = !connected || pending;
-  renderLobby({ room, connected, pending });
+  renderLobby({ room: lobby, connected, pending });
   if (!room) return;
   $("room-players").replaceChildren();
   for (const color of ["w", "b"]) {

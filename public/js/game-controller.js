@@ -1,5 +1,14 @@
+import {
+  setupLocalClock,
+  startLocalClock,
+  expireLocalClock,
+  localAction,
+  undoLocalClock,
+  stopLocalClock,
+  localLobby,
+} from "./local-clock.js";
 import { downloadGame } from "./download.js";
-import { newGame, applyAction, legalTargets, other } from "/shared/game.js";
+import { newGame, legalTargets, other } from "/shared/game.js";
 import {
   loadLocalGame,
   saveLocalGame,
@@ -39,6 +48,7 @@ export function startGame() {
       selection,
       flipped,
       undoStack,
+      localLobby: mode === "local" ? localLobby(game) : null,
       canAct: canAct(),
     });
   }
@@ -46,7 +56,7 @@ export function startGame() {
     return (
       !game.result &&
       !pending &&
-      (mode === "local" ||
+      ((mode === "local" && game.localTiming?.phase !== "waiting") ||
         (room?.color &&
           connected &&
           room.joined &&
@@ -86,8 +96,10 @@ export function startGame() {
       ? { kind: "place", type: selection.type, to }
       : { kind: "move", from: selection.from, to };
     if (mode === "local") {
-      undoStack.push(game);
-      game = applyAction(game, action);
+      if (checkLocalTime()) return;
+      const next = localAction(game, action);
+      if (next.ply > game.ply) undoStack.push(game);
+      game = next;
       selection = null;
       saveLocal();
       render();
@@ -137,7 +149,7 @@ export function startGame() {
       return;
     }
     if (!undoStack.length) return;
-    game = undoStack.pop();
+    game = undoLocalClock(game, undoStack.pop());
     selection = null;
     saveLocal();
     render();
@@ -149,11 +161,30 @@ export function startGame() {
   function resetLocal() {
     closePanel();
     undoStack = [];
-    game = newGame();
+    const settings = game.localTiming?.settings;
+    game = settings ? setupLocalClock(newGame(), settings) : newGame();
     selection = null;
     saveLocal();
     render();
   }
+  $("local-settings").onclick = () => {
+    if (mode !== "local" || game.ply || game.result) return;
+    closePanel();
+    game = setupLocalClock(game, game.localTiming?.settings);
+    saveLocal();
+    render();
+  };
+  function checkLocalTime() {
+    if (mode !== "local") return false;
+    const next = expireLocalClock(game);
+    if (next === game) return false;
+    game = next;
+    selection = null;
+    saveLocal();
+    render();
+    return true;
+  }
+  setInterval(checkLocalTime, 100);
   $("new-game").onclick = () => {
     if (game.ply && !game.result)
       confirmAction(
@@ -177,6 +208,22 @@ export function startGame() {
   $("local-mode").onclick = () => switchMode("local");
   $("online-mode").onclick = () => switchMode("online");
   function send(message) {
+    if (mode === "local" && ["settings", "ready"].includes(message.type)) {
+      try {
+        if (game.ply || game.result)
+          throw new Error("새 대국에서 시간을 설정하세요.");
+        game =
+          message.type === "settings"
+            ? setupLocalClock(game, message.settings)
+            : startLocalClock(game);
+        saveLocal();
+        render();
+        return true;
+      } catch (error) {
+        toast(error.message);
+        return false;
+      }
+    }
     if (connection.send(message)) return true;
     pending = false;
     toast("서버 연결을 확인해 주세요.");
@@ -285,8 +332,9 @@ export function startGame() {
       "상대 플레이어의 승리로 대국이 종료됩니다.",
       () => {
         if (mode === "local") {
+          if (checkLocalTime()) return;
           game = {
-            ...game,
+            ...stopLocalClock(game),
             result: { winner: other(game.turn), reason: "resign", line: [] },
           };
           saveLocal();
