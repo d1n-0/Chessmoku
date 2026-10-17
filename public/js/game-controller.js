@@ -50,6 +50,7 @@ export function startGame() {
         (room?.color &&
           connected &&
           room.joined &&
+          room.phase === "playing" &&
           !room.colorRequest &&
           !room.undoRequest &&
           room.online[other(room.color)] &&
@@ -194,6 +195,7 @@ export function startGame() {
       } else if (msg.type === "state") {
         const firstJoin = !room || room.color !== msg.color;
         const oldVersion = room?.version;
+        const previousPhase = room?.phase;
         const hadResult = !!game.result;
         room = msg;
         mode = "online";
@@ -207,6 +209,8 @@ export function startGame() {
           flipped = room.color === "b";
           closePanel();
         }
+        if (room.phase === "playing" && previousPhase !== "playing")
+          closePanel();
         render();
       } else if (msg.type === "left") {
         setSession(null);

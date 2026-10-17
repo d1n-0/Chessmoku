@@ -99,6 +99,10 @@ test(
       black.sendJSON({ type: "join", code: session.code });
       await black.next((message) => message.type === "state" && message.joined);
       await white.next((message) => message.type === "state" && message.joined);
+      white.sendJSON({ type: "ready", ready: true });
+      black.sendJSON({ type: "ready", ready: true });
+      await white.next((message) => message.type === "state" && message.phase === "playing");
+      await black.next((message) => message.type === "state" && message.phase === "playing");
       white.sendJSON({
         type: "action",
         version: 0,

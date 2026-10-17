@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { newGame } from "../../shared/game.js";
+import { waitingRoom } from "./lifecycle.js";
 
 export function createRoomConnections({ rooms, persist }) {
   const send = (socket, message) => {
@@ -25,19 +25,32 @@ export function createRoomConnections({ rooms, persist }) {
         code: room.code,
         color,
         queuePosition: position,
+        isHost:
+          room.hostToken ===
+          (color ? room.tokens[color] : room.queue[position - 1]?.token),
+        phase: room.phase,
+        ready: room.ready,
+        settings: room.settings,
+        clock: room.clock,
+        serverNow: Date.now(),
         colorRequest: room.colorRequest || null,
         undoRequest: room.undoRequest || null,
         players: Object.fromEntries(
           ["w", "b"].map((c) => [
             c,
             room.tokens[c]
-              ? { name: room.names[room.tokens[c]] || "플레이어" }
+              ? {
+                  name: room.names[room.tokens[c]] || "플레이어",
+                  host: room.hostToken === room.tokens[c],
+                }
               : null,
           ]),
         ),
         queue: room.queue.map((entry, index) => ({
           position: index + 1,
           name: room.names[entry.token] || "플레이어",
+          id: room.ids[entry.token],
+          host: room.hostToken === entry.token,
           online: entry.socket?.readyState === WebSocket.OPEN,
         })),
         game: room.game,
@@ -61,6 +74,8 @@ export function createRoomConnections({ rooms, persist }) {
     if (room) {
       if (socket.color && room.sockets[socket.color] === socket) {
         room.sockets[socket.color] = null;
+        if (room.phase === "waiting")
+          room.ready = room.ready.filter((c) => c !== socket.color);
         room.colorRequest = null;
         room.undoRequest = null;
       }
@@ -99,13 +114,7 @@ export function createRoomConnections({ rooms, persist }) {
       attach(entry.socket, room, color);
       changed = true;
     }
-    if (changed) {
-      room.game = newGame();
-      room.version++;
-      room.rematch = [];
-      room.colorRequest = null;
-      room.undoRequest = null;
-    }
+    if (changed) waitingRoom(room);
   }
   return { send, broadcast, commit, detach, attach, promote };
 }

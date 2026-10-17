@@ -48,6 +48,12 @@ async function launch(dir) {
     },
   };
 }
+async function ready(a, b) {
+  a.sendJSON({ type: "ready", ready: true });
+  b.sendJSON({ type: "ready", ready: true });
+  await a.next((m) => m.type === "state" && m.phase === "playing");
+  await b.next((m) => m.type === "state" && m.phase === "playing");
+}
 test("room lifecycle: authority, joins, capture, persistence, resume, rematch, leave", async () => {
   const dir = mkdtempSync(path.join(tmpdir(), "five-test-"));
   let app = await launch(dir);
@@ -68,7 +74,7 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
       version: 0,
       action: { kind: "place", type: "r", to: 0 },
     });
-    assert.match((await a.next((m) => m.type === "error")).message, /상대/);
+    assert.match((await a.next((m) => m.type === "error")).message, /준비/);
     const b = await client(app.url);
     clients.push(b);
     b.sendJSON({ type: "join", code: sa.code.toLowerCase() });
@@ -86,6 +92,7 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     await c.next((m) => m.type === "left");
     c.sendJSON({ type: "resume", code: sa.code, token: "invalid" });
     assert.match((await c.next((m) => m.type === "error")).message, /재접속/);
+    await ready(a, b);
     b.sendJSON({
       type: "action",
       version: 0,
@@ -148,6 +155,7 @@ test("room lifecycle: authority, joins, capture, persistence, resume, rematch, l
     assert.equal(reset.game.board[60].type, "k");
     assert.equal(reset.game.board[4].type, "k");
     assert.equal(reset.game.reserves.w.k, 0);
+    await ready(ar, br);
     br.sendJSON({ type: "leave" });
     const left = await ar.next(
       (m) => m.type === "state" && m.game.result?.reason === "resign",
@@ -262,6 +270,7 @@ test("queue persists, resumes, restricts spectators and promotes FIFO on explici
       (await revoked.next((m) => m.type === "error")).message,
       /재접속/,
     );
+    await ready(restoredWhite, restoredFirst);
     restoredWhite.sendJSON({
       type: "action",
       version: promoted.version,
@@ -324,6 +333,7 @@ test("offline waiters are skipped, white seats can be filled and queue cancellat
       (await resumed.next((m) => m.type === "state")).queuePosition,
       1,
     );
+    await ready(second, black);
     black.sendJSON({ type: "resign" });
     await second.next((m) => m.type === "state" && m.game.result);
     second.sendJSON({ type: "rematch" });
@@ -375,7 +385,7 @@ test("player names, consensual colors, credential ownership and yielding seats",
       version: solo.version,
       action: { kind: "place", type: "p", to: 48 },
     });
-    assert.match((await b.next((m) => m.type === "error")).message, /색상/);
+    assert.match((await b.next((m) => m.type === "error")).message, /준비/);
     b.sendJSON({ type: "color-response", accept: false });
     await a.next((m) => m.type === "state" && m.joined && !m.colorRequest);
     a.sendJSON({ type: "choose-color", color: "w" });
@@ -386,6 +396,7 @@ test("player names, consensual colors, credential ownership and yielding seats",
     );
     assert.equal(swapped.players.w.name, "가람");
     assert.equal(app.rooms.get(sa.code).tokens.w, sa.token);
+    await ready(a, b);
     a.sendJSON({
       type: "action",
       version: swapped.version,
@@ -393,7 +404,7 @@ test("player names, consensual colors, credential ownership and yielding seats",
     });
     await b.next((m) => m.type === "state" && m.game.ply === 1);
     a.sendJSON({ type: "choose-color", color: "b" });
-    assert.match((await a.next((m) => m.type === "error")).message, /첫 수/);
+    assert.match((await a.next((m) => m.type === "error")).message, /준비/);
     const c = await connect();
     c.sendJSON({ type: "join", code: sa.code, name: "다온" });
     const sc = await c.next((m) => m.type === "session");
@@ -451,6 +462,7 @@ test("online undo requires consent, restores captures and survives reconnect and
     await c.next((m) => m.type === "session");
     a.sendJSON({ type: "undo-request", version: 0 });
     await a.next((m) => m.type === "error");
+    await ready(a, b);
     const move = async (socket, version, action) => {
       socket.sendJSON({ type: "action", version, action });
       return a.next((m) => m.type === "state" && m.version === version + 1);
@@ -519,6 +531,166 @@ test("online undo requires consent, restores captures and survives reconnect and
     assert.equal(again.game.reserves.b.n, 2);
   } finally {
     clients.forEach((socket) => socket.terminate());
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("host settings, readiness, assignment, stop and FIFO yielding", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-lobby-"));
+  const app = await launch(dir),
+    sockets = [];
+  try {
+    for (let i = 0; i < 3; i++) sockets.push(await client(app.url));
+    const [a, b, c] = sockets;
+    a.sendJSON({ type: "create", name: "방장" });
+    const session = await a.next((m) => m.type === "session");
+    for (const socket of [b, c]) {
+      socket.sendJSON({ type: "join", code: session.code });
+      await socket.next((m) => m.type === "session");
+    }
+    const initial = await c.next((m) => m.type === "state");
+    assert.equal(initial.phase, "waiting");
+    assert.equal(initial.players.w.host, true);
+    assert.equal(initial.queuePosition, 1);
+    const settings = {
+      turnSeconds: 30,
+      totalSeconds: 180,
+      incrementSeconds: 2,
+    };
+    b.sendJSON({ type: "settings", settings });
+    assert.match((await b.next((m) => m.type === "error")).message, /방장/);
+    a.sendJSON({
+      type: "action",
+      version: 0,
+      action: { kind: "place", type: "p", to: 48 },
+    });
+    assert.match((await a.next((m) => m.type === "error")).message, /준비/);
+    a.sendJSON({
+      type: "settings",
+      settings: { ...settings, turnSeconds: -1 },
+    });
+    await a.next((m) => m.type === "error");
+    a.sendJSON({ type: "settings", settings });
+    await a.next((m) => m.type === "state" && m.settings.totalSeconds === 180);
+    a.sendJSON({ type: "ready", ready: true });
+    await a.next((m) => m.type === "state" && m.ready.length === 1);
+    a.sendJSON({ type: "settings", settings });
+    assert.match((await a.next((m) => m.type === "error")).message, /취소/);
+    c.sendJSON({ type: "ready", ready: true });
+    await c.next((m) => m.type === "error");
+    a.sendJSON({ type: "ready", ready: false });
+    await a.next(
+      (m) =>
+        m.type === "state" &&
+        !m.ready.length &&
+        m.settings.totalSeconds === 180,
+    );
+    a.sendJSON({
+      type: "assign-player",
+      color: "w",
+      playerId: initial.queue[0].id,
+    });
+    const assigned = await a.next(
+      (m) => m.type === "state" && m.color === null,
+    );
+    assert.equal(assigned.isHost, true);
+    assert.equal(assigned.phase, "waiting");
+    await ready(c, b);
+    const room = app.rooms.get(session.code);
+    room.clock.turnStarted -= 1000;
+    const version = room.version;
+    c.sendJSON({
+      type: "action",
+      version,
+      action: { kind: "place", type: "p", to: 48 },
+    });
+    const moved = await c.next((m) => m.type === "state" && m.game.ply === 1);
+    assert.ok(
+      moved.clock.remaining.w <= 181000 && moved.clock.remaining.w > 180000,
+    );
+    assert.equal(moved.clock.remaining.b, 180000);
+    b.sendJSON({ type: "stop-game" });
+    assert.match((await b.next((m) => m.type === "error")).message, /방장/);
+    a.sendJSON({
+      type: "assign-player",
+      color: "b",
+      playerId: assigned.queue[0].id,
+    });
+    await a.next((m) => m.type === "error");
+    a.sendJSON({ type: "stop-game" });
+    const stopped = await a.next(
+      (m) => m.type === "state" && m.game.result?.reason === "stopped",
+    );
+    assert.equal(stopped.phase, "finished");
+    assert.equal(stopped.game.result.winner, null);
+    assert.equal(stopped.clock.turnStarted, null);
+    a.sendJSON({ type: "prepare-game" });
+    await a.next(
+      (m) =>
+        m.type === "state" &&
+        m.phase === "waiting" &&
+        m.version > stopped.version,
+    );
+    c.sendJSON({ type: "yield-seat" });
+    const returned = await a.next(
+      (m) =>
+        m.type === "state" && m.color === "w" && m.version > stopped.version,
+    );
+    assert.equal(returned.phase, "waiting");
+    assert.deepEqual(returned.ready, []);
+    assert.equal(returned.queue[0].host, false);
+    a.sendJSON({ type: "leave" });
+    await a.next((m) => m.type === "left");
+    const newHost = await b.next((m) => m.type === "state" && m.isHost);
+    assert.equal(newHost.players.b.host, true);
+    assert.equal(newHost.phase, "waiting");
+  } finally {
+    sockets.forEach((s) => s.terminate());
+    await app.stop();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("server awards timeout without an incoming action, including disconnected players", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "chessmoku-clock-"));
+  let app = await launch(dir);
+  const sockets = [];
+  try {
+    const a = await client(app.url),
+      b = await client(app.url);
+    sockets.push(a, b);
+    a.sendJSON({ type: "create" });
+    const session = await a.next((m) => m.type === "session");
+    b.sendJSON({ type: "join", code: session.code });
+    await b.next((m) => m.type === "session");
+    a.sendJSON({
+      type: "settings",
+      settings: { turnSeconds: 1, totalSeconds: 60, incrementSeconds: 2 },
+    });
+    await a.next((m) => m.type === "state" && m.settings.turnSeconds === 1);
+    await ready(a, b);
+    a.close();
+    const result = await b.next(
+      (m) => m.type === "state" && m.game.result?.reason === "timeout",
+    );
+    assert.equal(result.game.result.winner, "b");
+    assert.equal(result.phase, "finished");
+    await app.stop();
+    app = await launch(dir);
+    const resumed = await client(app.url);
+    sockets.push(resumed);
+    resumed.sendJSON({
+      type: "resume",
+      code: session.code,
+      token: session.token,
+    });
+    const restored = await resumed.next((m) => m.type === "state");
+    assert.equal(restored.game.result.reason, "timeout");
+    assert.equal(restored.settings.incrementSeconds, 2);
+    assert.equal(restored.isHost, true);
+  } finally {
+    sockets.forEach((s) => s.terminate());
     await app.stop();
     rmSync(dir, { recursive: true, force: true });
   }

@@ -19,12 +19,20 @@ function swapColors(room) {
   room.colorRequest = null;
   room.undoRequest = null;
   room.rematch = [];
+  room.ready = [];
   room.version++;
 }
 
 export function handleColorRequest(room, color, message) {
-  if (room.game.ply || room.game.result)
-    throw new Error("색상은 새 대국의 첫 수를 두기 전에 정할 수 있습니다.");
+  if (
+    room.phase !== "waiting" ||
+    room.ready.length ||
+    room.game.ply ||
+    room.game.result
+  )
+    throw new Error(
+      "모두 준비를 취소한 대기 상태에서 색상을 정할 수 있습니다.",
+    );
   if (message.type === "choose-color") {
     if (!["w", "b"].includes(message.color))
       throw new Error("흑 또는 백을 선택하세요.");

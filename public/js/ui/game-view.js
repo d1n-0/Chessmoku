@@ -16,6 +16,8 @@ export function createGameView() {
         five: "다섯 개의 기물이 한 줄로 연결되었습니다.",
         king: "상대 킹을 포획했습니다.",
         resign: "상대가 기권했습니다.",
+        timeout: "제한 시간이 소진되었습니다.",
+        stopped: "방장이 대국을 중단했습니다.",
         stalemate: "더 이상 가능한 행동이 없어 무승부입니다.",
       }[game.result?.reason] || ""
     );
@@ -77,13 +79,16 @@ export function createGameView() {
     if (game.result) {
       title = game.result.winner
         ? `${colorName(game.result.winner)} 승리!`
-        : "무승부";
+        : game.result.reason === "stopped"
+          ? "대국 중단"
+          : "무승부";
       detail = "";
       if (room?.rematch?.length) detail = "재대국 요청 중";
     }
     if (room?.colorRequest && !game.result) {
       detail = "색상 변경 요청 · 대국 메뉴에서 확인";
     }
+    if (room?.phase === "waiting") title = "대국 준비";
     if (room?.undoRequest) title = "무르기 요청 중";
     $("status-title").textContent = title;
     $("status-detail").textContent = detail;
@@ -108,6 +113,7 @@ export function createGameView() {
           !connected ||
           pending ||
           !room.joined ||
+          room.phase !== "playing" ||
           !room.online[other(room.color)] ||
           !!game.result ||
           !game.history.length ||
@@ -117,7 +123,11 @@ export function createGameView() {
     $("reject-undo").disabled = !connected || pending;
     $("resign").disabled =
       !!game.result ||
-      (mode === "online" && (!room?.color || !room?.joined || !connected));
+      (mode === "online" &&
+        (!room?.color ||
+          !room?.joined ||
+          !connected ||
+          room.phase !== "playing"));
     $("export-game").disabled = !game.history.length;
     if (game.result && game.result !== lastResult) {
       lastResult = game.result;

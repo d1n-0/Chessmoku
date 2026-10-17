@@ -94,6 +94,54 @@
                 aria-label="방 코드 복사"
               ></button>
               <p id="connection"></p>
+              <button id="ready-game" class="full">준비</button>
+              <p id="time-settings-summary"></p>
+              <details id="host-controls" hidden>
+                <summary>방 관리</summary>
+                <form id="room-settings">
+                  <label
+                    >착수 제한 (초, 0은 무제한)<input
+                      id="turn-seconds"
+                      type="number"
+                      min="0"
+                      max="3600"
+                      value="0"
+                      required
+                  /></label>
+                  <label
+                    >총 시간 (분, 0은 무제한)<input
+                      id="total-minutes"
+                      type="number"
+                      min="0"
+                      max="1440"
+                      step="0.1"
+                      value="0"
+                      required
+                  /></label>
+                  <label
+                    >착수 후 추가 (초)<input
+                      id="increment-seconds"
+                      type="number"
+                      min="0"
+                      max="600"
+                      value="0"
+                      required
+                  /></label>
+                  <button id="save-settings" class="full">설정 적용</button>
+                </form>
+                <form id="assign-form">
+                  <label for="assign-player">대기자</label
+                  ><select id="assign-player"></select>
+                  <label for="assign-color">자리</label
+                  ><select id="assign-color">
+                    <option value="w">백</option>
+                    <option value="b">흑</option>
+                  </select>
+                  <button id="assign-submit" class="full">플레이어 지정</button>
+                </form>
+                <button id="stop-game" class="full">대국 중단</button>
+                <button id="prepare-game" class="full">새 대국 준비</button>
+              </details>
               <ul id="room-players" aria-label="대국자"></ul>
               <div id="color-controls">
                 <div
@@ -121,7 +169,9 @@
       </aside>
       <section class="arena" aria-label="대국 보드">
         <div class="turn-banner" aria-live="polite">
-          <strong id="status-title"></strong><span id="turn-number"></span>
+          <strong id="status-title"></strong
+          ><span id="game-clock" aria-label="남은 시간" hidden></span
+          ><span id="turn-number"></span>
         </div>
         <section class="panel opponent-panel" aria-label="상대 보관 기물">
           <div class="panel-title">

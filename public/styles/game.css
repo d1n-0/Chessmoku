@@ -445,3 +445,43 @@ input {
   max-height: calc(100dvh - 88px);
   overflow-y: auto;
 }
+#host-controls {
+  margin: 12px 0;
+}
+#host-controls summary {
+  cursor: pointer;
+}
+#host-controls form {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+#host-controls input,
+#host-controls select {
+  width: 100%;
+  min-width: 0;
+}
+#game-clock {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#game-clock {
+  font-size: 16px;
+}
+@media (max-width: 599px) {
+  .turn-banner:has(#game-clock:not([hidden])) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: 48px;
+    gap: 4px;
+  }
+  #game-clock {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+@media (max-width: 599px) {
+  .arena:has(#game-clock:not([hidden])) .panel-title {
+    margin-bottom: 0;
+  }
+}

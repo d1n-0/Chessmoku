@@ -1,4 +1,10 @@
 import { test, expect } from "@playwright/test";
+const ready = async (a, b) => {
+  await a.locator("#ready-game").click();
+  await b.locator("#ready-game").click();
+  await expect(a.locator("#ready-game")).toBeHidden();
+  await expect(b.locator("#ready-game")).toBeHidden();
+};
 const place = async (page, name, to) => {
   await page.getByRole("button", { name: new RegExp(`${name} 배치`) }).click();
   await page.locator(`[data-square="${to}"]`).click();
@@ -84,6 +90,7 @@ test("two browser sessions join a room, move, reconnect, win and agree to rematc
     await b.getByRole("button", { name: "입장", exact: true }).click();
     await expect(a.locator("#connection")).toContainText("연결됨");
     await expect(b.locator("#connection")).toContainText("나는 흑");
+    await ready(a, b);
     await place(a, "백 룩", 0);
     await expect(b.locator('[data-square="0"] img')).toHaveCount(1);
     await expect(b.getByRole("button", { name: /흑 킹 배치/ })).toBeDisabled();
@@ -109,6 +116,7 @@ test("two browser sessions join a room, move, reconnect, win and agree to rematc
       "aria-label",
       "e1 백 킹",
     );
+    await ready(a, b);
     await a.getByRole("button", { name: "기권", exact: true }).click();
     await a.locator("#confirm-ok").click();
     await expect(b.locator("#result-title")).toHaveText("흑 승리!");
@@ -197,6 +205,7 @@ test("waiting player watches reserves, reconnects and takes a vacated seat", asy
       white.locator('#opponent-reserves [data-type="n"]'),
     ).toHaveAttribute("aria-label", "흑 나이트 보관, 2개");
     await expect(white.locator("#opponent-reserves button")).toHaveCount(0);
+    await ready(white, black);
     await place(white, "백 룩", 0);
     await place(black, "흑 나이트", 8);
     await expect(
@@ -215,6 +224,7 @@ test("waiting player watches reserves, reconnects and takes a vacated seat", asy
     await expect(waiting.locator("#connection")).toContainText("나는 흑");
     await expect(waiting.locator("#move-count")).toHaveText("0수");
     await expect(white.locator("#queue-status")).toHaveText("대기 0명");
+    await ready(white, waiting);
     await place(white, "백 폰", 48);
     await place(waiting, "흑 폰", 16);
     await expect(
@@ -258,7 +268,7 @@ test("compact layout fits common screens and mobile panels preserve controls", a
   await page.locator("#online-mode").click();
   await page.locator("#create-room").click();
   await expect(page.locator("#panel-dialog")).not.toBeVisible();
-  await expect(page.locator("#status-title")).toHaveText("상대 대기 중");
+  await expect(page.locator("#status-title")).toHaveText("대국 준비");
   await page.locator("#open-mode").click();
   await expect(page.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
   await page.setViewportSize({ width: 1280, height: 720 });
@@ -361,6 +371,7 @@ test("room roster, color agreement and seat handoff work through the UI", async 
     await expect(b.locator("#room-players")).toContainText("흑 · 새 이름");
     await expect(a.locator("#room-queue")).toContainText("가람 · 나");
     await b.screenshot({ path: "test-results/room-management.png" });
+    await ready(b, c);
     await place(b, "백 폰", 48);
     await expect(c.locator("#choose-white")).toBeDisabled();
     await c.setViewportSize({ width: 390, height: 844 });
@@ -392,6 +403,7 @@ test("online undo can be cancelled, declined and accepted, then restored on relo
     await b.locator("#join-form button").click();
     await expect(a.locator("#connection")).toContainText("연결됨");
     await expect(a.locator("#undo")).toBeDisabled();
+    await ready(a, b);
     await place(a, "백 룩", 0);
     await a.locator("#undo").click();
     await expect(a.locator("#undo")).toHaveText("요청 취소");
@@ -429,5 +441,93 @@ test("online undo can be cancelled, declined and accepted, then restored on relo
   } finally {
     await ac.close();
     await bc.close();
+  }
+});
+
+test("host configures clocks, assigns a player, waits for readiness and stops a match", async ({
+  browser,
+}) => {
+  const contexts = await Promise.all([0, 1, 2].map(() => browser.newContext()));
+  const [a, b, c] = await Promise.all(
+    contexts.map((context) => context.newPage()),
+  );
+  try {
+    for (const page of [a, b, c]) {
+      await page.goto("/");
+      await page.locator("#online-mode").click();
+    }
+    await a.locator("#create-room").click();
+    await expect(a.locator("#copy-code")).toHaveText(/^[A-Z2-9]{6}$/);
+    const code = await a.locator("#copy-code").textContent();
+    for (const [page, name] of [
+      [b, "둘째"],
+      [c, "셋째"],
+    ]) {
+      await page.locator("#player-name").fill(name);
+      await page.locator("#room-input").fill(code);
+      await page.locator("#join-form button").click();
+      await expect(page.locator("#copy-code")).toHaveText(code);
+    }
+    await expect(a.locator("#status-title")).toHaveText("대국 준비");
+    await expect(a.locator("#reserves button:enabled")).toHaveCount(0);
+    await expect(b.locator("#host-controls")).toBeHidden();
+    await a.locator("#host-controls summary").click();
+    await a.locator("#total-minutes").fill("3");
+    await a.locator("#increment-seconds").fill("2");
+    await a.locator("#turn-seconds").fill("30");
+    await a.locator("#save-settings").click();
+    await expect(b.locator("#time-settings-summary")).toContainText(
+      "총 3:00 · +2초 · 수당 30초",
+    );
+    await a.locator("#assign-color").selectOption("b");
+    await a.locator("#assign-submit").click();
+    await expect(c.locator("#connection")).toContainText("나는 흑");
+    await expect(b.locator("#queue-status")).toHaveText("대기 1번");
+    await a.locator("#ready-game").click();
+    await expect(a.locator("#save-settings")).toBeDisabled();
+    await expect(a.locator("#reserves button:enabled")).toHaveCount(0);
+    await c.locator("#ready-game").click();
+    await expect(a.locator("#status-title")).toHaveText("백 차례");
+    await expect(a.locator("#game-clock")).toBeVisible();
+    await place(a, "백 폰", 48);
+    await expect(c.locator("#move-count")).toHaveText("1수");
+    await a.screenshot({ path: "test-results/timed-room.png" });
+    expect(
+      await a.evaluate(
+        () => document.documentElement.scrollHeight <= innerHeight,
+      ),
+    ).toBe(true);
+    await c.setViewportSize({ width: 360, height: 640 });
+    expect(
+      await c.evaluate(
+        () =>
+          document.documentElement.scrollWidth <= innerWidth &&
+          document.documentElement.scrollHeight <= innerHeight,
+      ),
+    ).toBe(true);
+    await c.screenshot({ path: "test-results/timed-board-mobile.png" });
+    await c.setViewportSize({ width: 1280, height: 720 });
+    await a.locator("#stop-game").click();
+    await a.locator("#confirm-ok").click();
+    await expect(c.locator("#result-title")).toHaveText("대국 중단");
+    await a.locator("#result-dialog .close").click();
+    await a.locator("#prepare-game").click();
+    await expect(c.locator("#status-title")).toHaveText("대국 준비");
+    await expect(c.locator("#ready-game")).toHaveText("준비");
+    await c.locator("#yield-seat").click();
+    await c.locator("#confirm-ok").click();
+    await expect(b.locator("#connection")).toContainText("나는 흑");
+    await expect(b.locator("#ready-game")).toHaveText("준비");
+    await a.setViewportSize({ width: 390, height: 844 });
+    await a.locator("#open-mode").click();
+    await expect(a.locator("#save-settings")).toBeVisible();
+    expect(
+      await a.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await a.screenshot({ path: "test-results/timed-room-mobile.png" });
+  } finally {
+    await Promise.all(contexts.map((context) => context.close()));
   }
 });

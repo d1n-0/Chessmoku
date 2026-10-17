@@ -1,16 +1,18 @@
 import { colorName } from "/shared/game.js";
 import { $ } from "./dom.js";
+import { renderLobby, bindLobby } from "./room-lobby.js";
 import { confirmAction } from "./dialogs.js";
 
 export function renderRoom({ room, connected, pending }) {
   $("save-name").hidden = !room;
   $("save-name").disabled = !connected || pending;
+  renderLobby({ room, connected, pending });
   if (!room) return;
   $("room-players").replaceChildren();
   for (const color of ["w", "b"]) {
     const player = room.players[color];
     const item = document.createElement("li");
-    item.textContent = `${colorName(color)} · ${player?.name || "입장 대기"}${room.color === color ? " · 나" : ""}${player && !room.online[color] ? " · 재접속 대기" : ""}`;
+    item.textContent = `${colorName(color)} · ${player?.name || "입장 대기"}${room.color === color ? " · 나" : ""}${player?.host ? " · 방장" : ""}${room.ready.includes(color) && room.phase === "waiting" ? " · 준비" : ""}${player && !room.online[color] ? " · 재접속 대기" : ""}`;
     $("room-players").append(item);
   }
   $("queue-status").textContent = room.color
@@ -19,7 +21,7 @@ export function renderRoom({ room, connected, pending }) {
   $("room-queue").replaceChildren();
   for (const entry of room.queue) {
     const item = document.createElement("li");
-    item.textContent = `대기 ${entry.position} · ${entry.name}${entry.position === room.queuePosition ? " · 나" : ""}${entry.online ? "" : " · 재접속 대기"}`;
+    item.textContent = `대기 ${entry.position} · ${entry.name}${entry.position === room.queuePosition ? " · 나" : ""}${entry.host ? " · 방장" : ""}${entry.online ? "" : " · 재접속 대기"}`;
     $("room-queue").append(item);
   }
   $("color-controls").hidden = !room.color;
@@ -31,6 +33,8 @@ export function renderRoom({ room, connected, pending }) {
     $(id).disabled =
       !connected ||
       pending ||
+      room.phase !== "waiting" ||
+      !!room.ready.length ||
       !!room.game.ply ||
       !!room.game.result ||
       !!room.colorRequest;
@@ -51,6 +55,7 @@ export function renderRoom({ room, connected, pending }) {
 }
 
 export function bindRoomControls({ send, getRoom }) {
+  bindLobby({ send, getRoom });
   $("name-form").onsubmit = (event) => {
     event.preventDefault();
     if (getRoom()) send({ type: "rename", name: $("player-name").value });

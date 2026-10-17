@@ -1,3 +1,4 @@
+import { initializeRoom } from "./lifecycle.js";
 import { mkdirSync, readFileSync, writeFileSync, renameSync } from "node:fs";
 import path from "node:path";
 
@@ -18,6 +19,10 @@ export function createRoomRepository(dataDir) {
       });
   } catch (e) {
     if (e.code !== "ENOENT") throw e;
+  }
+  for (const room of rooms.values()) {
+    initializeRoom(room);
+    if (room.phase === "waiting") room.ready = [];
   }
   const persist = () => {
     writeFileSync(

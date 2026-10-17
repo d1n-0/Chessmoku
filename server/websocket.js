@@ -1,3 +1,4 @@
+import { clockExpired } from "./rooms/lifecycle.js";
 import { WebSocketServer } from "ws";
 import { createRoomConnections } from "./rooms/connections.js";
 import { createRoomService } from "./rooms/service.js";
@@ -46,6 +47,12 @@ export function attachWebSocketServer(server, { rooms, persist }) {
     socket.on("close", () => detach(socket));
     socket.on("error", () => {});
   });
+  const timer = setInterval(() => {
+    for (const room of rooms.values())
+      if (clockExpired(room)) connections.commit(room);
+  }, 250);
+  timer.unref();
+  server.on("close", () => clearInterval(timer));
   const heartbeat = setInterval(() => {
     for (const socket of wss.clients) {
       if (!socket.alive) socket.terminate();

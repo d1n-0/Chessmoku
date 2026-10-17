@@ -25,7 +25,8 @@ body {
   margin: 0;
 }
 button,
-input {
+input,
+select {
   font: inherit;
   color: inherit;
   background: var(--surface);
@@ -51,7 +52,8 @@ a {
 }
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible {
   outline: 3px solid var(--text);
   outline-offset: 3px;
 }
